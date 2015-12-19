@@ -1,11 +1,11 @@
-export let documents = [{
+export default [{
   id: 'cdtra',
   thread_id: 2, //This is the id if it's part of some thread otherwise this property won't exist in document
   message: {
     "html": "<p>Example HTML content</p>",
     "text": "Example text content",
     "subject": "example subject",
-    "from" {
+    "from": {
       "email": "a@example.com",
       "name": "A"
     },
