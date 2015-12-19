@@ -1,0 +1,28 @@
+{
+  "name": "redux-react-router-email-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ashok <coderatlabs@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "history": "^1.13.1",
+    "immutable": "^3.7.6",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-router": "^1.0.2",
+    "redux": "^3.0.5"
+  },
+  "devDependencies": {
+    "babel-core": "^6.3.17",
+    "babel-loader": "^6.2.0",
+    "babel-plugin-transform-object-rest-spread": "^6.3.13",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "deep-freeze": "0.0.1",
+    "expect": "^1.13.2"
+  }
+}
