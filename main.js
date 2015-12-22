@@ -25,27 +25,30 @@ const reducer = (state = fromJS({
 }), action) => {
   switch (action.type) {
     case SEND_EMAIL: 
-      return state
-      .updateIn([
-        'emails',
-        'sent'],
-        list => list.push(fromJS({
-          id: generateRandomString(),
-          thread_id: action.thread_id,
-          message: {
-            "html": `<p>${action.text}</p>`,
-            "text": action.text,
-            "subject": action.subject,
-            "from": state.getIn(['userInfo']),
-            "unread": true,
-            "to": action.to,
-            "timestamp": action.timestamp,
-            "headers": {
-              "Reply-To": action.replyTo
-            },
-            "important": false
-          }
-        })));
+      var email = {
+        id: generateRandomString(),
+        thread_id: action.thread_id,
+        message: {
+          "html": `<p>${action.text}</p>`,
+          "text": action.text,
+          "subject": action.subject,
+          "from": state.getIn(['userInfo']),
+          "unread": true,
+          "to": action.to,
+          "timestamp": action.timestamp,
+          "headers": {
+            "Reply-To": action.replyTo
+          },
+          "important": false
+        }
+      };
+      const existingSentItems = state.getIn(['emails', 'sent']);
+      if (existingSentItems && existingSentItems.size) {
+        return state.updateIn(['emails', 'sent'], list => list = list.push(fromJS(email)));
+      } else {
+        return state.setIn(['emails', 'sent'], fromJS(fetchSentItems('a@example.com'))).
+          updateIn(['emails', 'sent'], list => list.push(fromJS(email)));
+      }
       case FETCH_BOX:
         switch (action.box) {
           case 'inbox':
@@ -53,7 +56,7 @@ const reducer = (state = fromJS({
               'emails',
               action.box],
               value =>
-              value.size > 0 ?
+              (value && value.size > 0) ?
                 value :
                   fromJS(fetchInbox('a@example.com')))
                 case 'sent':
@@ -61,7 +64,7 @@ const reducer = (state = fromJS({
                     'emails',
                     action.box],
                     value =>
-                    value.size > 0 ?
+                    (value && value.size > 0) ?
                       value :
                         fromJS(fetchSentItems('a@example.com')))
         }
@@ -122,7 +125,13 @@ const ComposeModal = ({
         </fieldset>
         <button onClick={e => {
           e.preventDefault();
-          onClick(['b@example.com'], 'Test text', 'Test subject', undefined)
+          const _text = text.value || '';
+          const _subject = subject.value || '';
+          const _to = to.value.split(',');
+          if (_to.length === 0)
+            alert('Please specify the email address');
+          onClick(to.value.split(','), _text, _subject, undefined)
+          panel.hide();
         }}>{buttonName}</button>
       </form>
     </div>
