@@ -9,8 +9,10 @@ import { fetchInbox, fetchSentItems, fetchUnread } from './lib/fetchDocuments';
 const FETCH_BOX = 'FETCH_BOX';
 const SEND_EMAIL = 'SEND_EMAIL';
 const SELECT_BOX = 'SELECT_BOX';
+const SELECT_EMAIL_TO_READ = 'SELECT_EMAIL_TO_READ';
 
 const reducer = (state = fromJS({
+  selectedEmailIndex: 0,
   selectedBox: 'inbox',
   userInfo: {
     email: 'a@example.com',
@@ -24,6 +26,8 @@ const reducer = (state = fromJS({
   unread: fetchUnread('a@example.com')
 }), action) => {
   switch (action.type) {
+    case SELECT_EMAIL_TO_READ:
+      return state.set('selectedEmailIndex', action.index);
     case SEND_EMAIL: 
       var email = {
         id: generateRandomString(),
@@ -176,14 +180,19 @@ const EmailItem = ({
   unread,
   subject,
   children,
+  onClick,
+  selected
 }) => {
   let classes = 'email-item pure-g';
-  if (false)
+  if (selected)
     classes += ' email-item-selected';
   if (unread)
     classes += ' email-item-unread';
   return (
-    <div className={classes}>
+    <div className={classes} onClick={() =>
+      {
+        onClick();
+      }}>
       <div className="pure-u">
         <img className="email-avatar" alt={name + '\'s avatar'} src="https://avatars3.githubusercontent.com/u/8316625?v=3&s=460" height="65" width="65"/>
       </div>
@@ -199,13 +208,19 @@ const EmailItem = ({
 };
 
 const EmailList = ({
-  emails
+  emails,
+  onEmailItemClick,
+  selected
 }) => (
   <div className="pure-u id-list"> 
     <div className="content">
       {emails ? emails.map((email, i) => {
         return <EmailItem
+          onClick={() => {
+            onEmailItemClick(i);
+          }}
           key={i}
+          selected={selected === i}
           name={email.getIn(['message', 'from', 'name'])}
           unread={false}
           subject={email.getIn(['message', 'subject'])}>
@@ -247,10 +262,10 @@ const App = ({
   emails,
   selectedBox,
   unread,
-  selectedMailIndex
+  selectedEmailIndex
 }) => {
   const selectedEmails = emails.get(selectedBox);
-  const selectedEmail = selectedEmails.get(selectedMailIndex || 0);
+  const selectedEmail = selectedEmails.get(selectedEmailIndex);
   return <div className="pure-g-r content id-layout">
     <Nav 
       unread={unread}
@@ -258,7 +273,16 @@ const App = ({
         store.dispatch(fetchAndSelectBox(box));
       }}
     />
-    <EmailList emails={selectedEmails} />
+    <EmailList
+      emails={selectedEmails}
+      onEmailItemClick={(index) => {
+        store.dispatch({
+          type: 'SELECT_EMAIL_TO_READ',
+          index
+        });
+      }}
+      selected={selectedEmailIndex}
+    />
     <Reader email={selectedEmail} />
     <ComposeModal
       onClick={(to, text, subject, thread_id) => 
