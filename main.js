@@ -1,27 +1,28 @@
 import ReactDOM from 'react-dom';
 import React, { Component } from 'react';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import { Map, List, fromJS } from 'immutable';
 import generateRandomString from './lib/generateRandomString';
 import { fetchInbox, fetchSentItems, fetchUnread } from './lib/fetchDocuments';
 
-const FETCH_INBOX = 'FETCH_INBOX';
+const FETCH_BOX = 'FETCH_BOX';
 const SEND_EMAIL = 'SEND_EMAIL';
+const SELECT_BOX = 'SELECT_BOX';
 
 const reducer = (state = fromJS({
-  selectedBox: 'sent',
+  selectedBox: 'inbox',
   userInfo: {
     email: 'a@example.com',
     name: 'A'
   },
   emails: {
     inbox: fetchInbox('a@example.com'),
-    outbox: [],
-    sent: []
+    outbox: List([]),
+    sent: List([])
   },
   unread: fetchUnread('a@example.com')
 }), action) => {
-  console.log(action);
   switch (action.type) {
     case SEND_EMAIL: 
       return state
@@ -45,13 +46,52 @@ const reducer = (state = fromJS({
             "important": false
           }
         })));
-    case FETCH_INBOX:
-    default:
-      return state;
+      case FETCH_BOX:
+        switch (action.box) {
+          case 'inbox':
+            return state.updateIn([
+              'emails',
+              action.box],
+              value =>
+              value.size > 0 ?
+                value :
+                  fromJS(fetchInbox('a@example.com')))
+                case 'sent':
+                  return state.updateIn([
+                    'emails',
+                    action.box],
+                    value =>
+                    value.size > 0 ?
+                      value :
+                        fromJS(fetchSentItems('a@example.com')))
+        }
+      case SELECT_BOX:
+        switch (action.box) {
+          case 'inbox':
+            return state.set('selectedBox', action.box);
+          case 'sent':
+            return state.set('selectedBox', action.box);
+        }
+      default:
+        return state;
   }
 };
 
-const store = createStore(reducer);
+const storeWithMiddleware = applyMiddleware(thunk)(createStore);
+const store = storeWithMiddleware(reducer);
+
+const fetchAndSelectBox = box => (
+  dispatch => {
+    dispatch({
+      type: 'FETCH_BOX',
+      box: box
+    });
+    dispatch({
+      type: 'SELECT_BOX',
+      box: box
+    });
+  }
+);
 
 const ComposeModal = ({
   onClick,
@@ -90,7 +130,8 @@ const ComposeModal = ({
 };
 
 const Nav = ({
-  unread
+  unread,
+  onClick
 }) => (
   <div className="pure-u id-nav">
     <a href="#nav" className="nav-menu-button">Menu</a>
@@ -100,9 +141,15 @@ const Nav = ({
 
       <div className="pure-menu pure-menu-open">
         <ul>
-          <li><a href="#">Inbox <span className="email-count">({unread})</span></a></li>
+          <li><a onClick={e => {
+            e.preventDefault();
+            onClick('inbox')
+          }} href="#">Inbox <span className="email-count">({unread})</span></a></li>
           <li><a href="#">Important</a></li>
-          <li><a href="#">Sent</a></li>
+          <li><a onClick={e => {
+            e.preventDefault();
+            onClick('sent');
+          }} href="#">Sent</a></li>
           <li><a href="#">Drafts</a></li>
           <li><a href="#">Trash</a></li>
           <li className="pure-menu-heading">Labels</li>
@@ -145,7 +192,7 @@ const EmailItem = ({
 const EmailList = ({
   emails
 }) => (
-  <div className="pure-u id-list">
+  <div className="pure-u id-list"> 
     <div className="content">
       {emails ? emails.map((email, i) => {
         return <EmailItem
@@ -157,13 +204,13 @@ const EmailList = ({
         </EmailItem>
         }) : ''}
       </div>
-  </div>
+  </div> 
 );
 
 const Reader = ({
   email
 }) => (
-  <div className="pure-u id-main">
+  <div className="pure-u id-main"> 
     <div className="content">
       <div className="email-content pure-g">
         <div className="email-content-header pure-g">
@@ -184,7 +231,7 @@ const Reader = ({
         <div className="email-content-body pure-u-1" dangerouslySetInnerHTML={{__html: email ? email.getIn(['message', 'html']): ''}} />
       </div>
     </div>
-  </div>
+  </div> 
 );
 
 const App = ({
@@ -194,9 +241,14 @@ const App = ({
   selectedMailIndex
 }) => {
   const selectedEmails = emails.get(selectedBox);
-  const selectedEmail = selectedEmails.get(selectedMailIndex || 0)
+  const selectedEmail = selectedEmails.get(selectedMailIndex || 0);
   return <div className="pure-g-r content id-layout">
-    <Nav unread={unread} />
+    <Nav 
+      unread={unread}
+      onClick={(box) => {
+        store.dispatch(fetchAndSelectBox(box));
+      }}
+    />
     <EmailList emails={selectedEmails} />
     <Reader email={selectedEmail} />
     <ComposeModal
@@ -217,6 +269,7 @@ const App = ({
 
 const render = () => {
   const state = store.getState().toObject();
+  const t = state.selectedBox;
   ReactDOM.render(
     <App {...state}/>,
     document.getElementById('app')
