@@ -11,6 +11,7 @@ const SEND_EMAIL = 'SEND_EMAIL';
 const SELECT_BOX = 'SELECT_BOX';
 const SELECT_EMAIL_TO_READ = 'SELECT_EMAIL_TO_READ';
 const SEND_REPLY = 'SEND_REPLY';
+const FORWARD_EMAIL = 'FORWARD_EMAIL';
 
 const reducer = (state = fromJS({
   selectedEmailIndex: 0,
@@ -29,6 +30,31 @@ const reducer = (state = fromJS({
   switch (action.type) {
     case SELECT_EMAIL_TO_READ:
       return state.set('selectedEmailIndex', action.index);
+    case FORWARD_EMAIL:
+      const email = action.email;
+      const forwardedEmail = {
+        id: generateRandomString(),
+        message: {
+          "html": `<p>begin forwarded message</p></br>${email.getIn(['message', 'html'])}`,
+          "text": `being forwarded message --- ${email.getIn(['message', 'text'])}`,
+          "subject": email.getIn(['message', 'subject']),
+          "from": state.getIn(['userInfo']),
+          "unread": true,
+          "to": action.to,
+          "timestamp": action.timestamp,
+          "headers": {
+            "Reply-To": state.getIn(['userInfo', 'email'])
+          },
+          "important": false
+        }
+      };
+      const items = state.getIn(['emails', 'sent']);
+      if (items && items.size) {
+        return state.updateIn(['emails', 'sent'], list => list = list.push(fromJS(forwardedEmail)));
+      } else {
+        return state.setIn(['emails', 'sent'], fromJS(fetchSentItems('a@example.com'))).
+          updateIn(['emails', 'sent'], list => list.push(fromJS(forwardedEmail)));
+      };
     case SEND_REPLY:
       var email = {
         id: generateRandomString(),
@@ -195,6 +221,36 @@ const ReplyModal = ({
   />
 );
 
+const ForwardModal = ({
+  to,
+  onClick
+}) => {
+  return <div id="forward-email-content">
+    <div className="yui3-widget-bd">
+      <form>
+        <fieldset>
+          <p>
+            <label>To</label><br/>
+            <input ref={node => {
+              to = node;
+            }} type="email" id="forward-email-to" placeholder="" />
+        </p>
+      </fieldset>
+      <button onClick={e => {
+        e.preventDefault();
+        const _to = to.value.split(',');
+        if (_to.length === 0)
+          alert('Please specify the email address');
+        onClick(_to)
+        forwardPanel.hide();
+      }}>
+      "Forward"
+    </button>
+  </form>
+</div>
+  </div>;
+};
+
 const Nav = ({
   unread,
   onClick
@@ -300,7 +356,7 @@ const Reader = ({
 
           <div className="pure-u-1-2 email-content-controls">
             <a id="reply-button" className="pure-button secondary-button" href="#">Reply</a>
-            <a className="pure-button secondary-button">Forward</a>
+            <a id="forward-button" className="pure-button secondary-button">Forward</a>
             <a className="pure-button secondary-button">Move to</a>
           </div>
         </div>
@@ -362,6 +418,16 @@ const App = ({
         replyPanel.hide();
       }}
       toEmail="a@example.com"
+    />
+    <ForwardModal
+      onClick={(to) => {
+        store.dispatch({
+          type: 'FORWARD_EMAIL',
+          email: selectedEmail,
+          to,
+          timestamp: new Date().toISOString()
+        });
+      }}
     />
   </div>
 };

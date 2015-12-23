@@ -86,6 +86,22 @@
         replyPanel.show(); 
       });
 
+      var forwardBtn = Y.one('#forward-button');
+      forwardPanel = new Y.Panel({
+        srcNode      : '#forward-email-content',
+        headerContent: 'Forward Email',
+        width        : 700,
+        zIndex       : 5,
+        centered     : true,
+        modal        : true,
+        visible      : false,
+        render       : true
+      });
+
+      forwardBtn.on('click', function(e) {
+        forwardPanel.show(); 
+      });
+
     })
     </script>
 
