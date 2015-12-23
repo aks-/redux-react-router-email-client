@@ -69,6 +69,23 @@
       composeBtn.on('click', function(e) {
         panel.show(); 
       });
+
+      var replyBtn = Y.one('#reply-button');
+      replyPanel = new Y.Panel({
+        srcNode      : '#reply-email-content',
+        headerContent: 'Reply To Email',
+        width        : 700,
+        zIndex       : 5,
+        centered     : true,
+        modal        : true,
+        visible      : false,
+        render       : true
+      });
+
+      replyBtn.on('click', function(e) {
+        replyPanel.show(); 
+      });
+
     })
     </script>
 

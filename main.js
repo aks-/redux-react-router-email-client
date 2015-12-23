@@ -10,6 +10,7 @@ const FETCH_BOX = 'FETCH_BOX';
 const SEND_EMAIL = 'SEND_EMAIL';
 const SELECT_BOX = 'SELECT_BOX';
 const SELECT_EMAIL_TO_READ = 'SELECT_EMAIL_TO_READ';
+const SEND_REPLY = 'SEND_REPLY';
 
 const reducer = (state = fromJS({
   selectedEmailIndex: 0,
@@ -28,10 +29,34 @@ const reducer = (state = fromJS({
   switch (action.type) {
     case SELECT_EMAIL_TO_READ:
       return state.set('selectedEmailIndex', action.index);
-    case SEND_EMAIL: 
+    case SEND_REPLY:
       var email = {
         id: generateRandomString(),
         thread_id: action.thread_id,
+        message: {
+          "html": `<p>${action.text}</p>`,
+          "text": action.text,
+          "subject": action.subject,
+          "from": state.getIn(['userInfo']),
+          "unread": true,
+          "to": action.to,
+          "timestamp": action.timestamp,
+          "headers": {
+            "Reply-To": action.replyTo
+          },
+          "important": false
+        }
+      };
+      const sentItems = state.getIn(['emails', 'sent']);
+      if (sentItems && sentItems.size) {
+        return state.updateIn(['emails', 'sent'], list => list = list.push(fromJS(email)));
+      } else {
+        return state.setIn(['emails', 'sent'], fromJS(fetchSentItems('a@example.com'))).
+          updateIn(['emails', 'sent'], list => list.push(fromJS(email)));
+      };
+    case SEND_EMAIL: 
+      var email = {
+        id: generateRandomString(),
         message: {
           "html": `<p>${action.text}</p>`,
           "text": action.text,
@@ -100,47 +125,75 @@ const fetchAndSelectBox = box => (
   }
 );
 
-const ComposeModal = ({
+const Modal = ({
   onClick,
-  buttonName
+  buttonName,
+  toEmail,
+  modalPreClassName
 }) => {
   let to, subject, text;
-  return <div id="compose-email-content">
+  return <div id={modalPreClassName+"-email-content"}>
     <div className="yui3-widget-bd">
       <form>
         <fieldset>
-          <p>
-            <label>To</label><br/>
-            <input ref={node => {
-              to = node;
-            }} type="email" id="compose-email-to" placeholder="" />
-          </p>
-          <p>
-            <label>Subject</label><br/>
-            <input ref={node => {
-              subject = node;
-            }} type="text" id="compose-email-subject" placeholder="" />
+          { toEmail ?
+            '' :
+              <p>
+                <label>To</label><br/>
+                <input ref={node => {
+                  to = node;
+                }} type="email" id="compose-email-to" placeholder="" />
+            </p>
+            }
+            <p>
+              <label>Subject</label><br/>
+              <input ref={node => {
+                subject = node;
+              }} type="text" id="compose-email-subject" placeholder="" />
           </p>
           <p>
             <textarea ref={node => {
               text = node;
             }} id="compose-email-body" placeholder=""></textarea>
-          </p>
-        </fieldset>
-        <button onClick={e => {
-          e.preventDefault();
-          const _text = text.value || '';
-          const _subject = subject.value || '';
-          const _to = to.value.split(',');
-          if (_to.length === 0)
-            alert('Please specify the email address');
-          onClick(to.value.split(','), _text, _subject, undefined)
-          panel.hide();
-        }}>{buttonName}</button>
-      </form>
-    </div>
+        </p>
+      </fieldset>
+      <button onClick={e => {
+        e.preventDefault();
+        const _text = text.value || '';
+        const _subject = subject.value || '';
+        const _to = !!!to ?
+          toEmail :
+            to.value.split(',');
+        if (_to.length === 0)
+          alert('Please specify the email address');
+        onClick(_to, _text, _subject, undefined)
+      }}>{buttonName}</button>
+  </form>
+  </div>
   </div>;
 };
+
+const ComposeModal = ({
+  onClick,
+}) => (
+  <Modal
+    onClick={onClick}
+    buttonName="Send"
+    modalPreClassName="compose"
+  />
+);
+
+const ReplyModal = ({
+  onClick,
+  toEmail
+}) => (
+  <Modal 
+    onClick={onClick}
+    toEmail={toEmail}
+    buttonName="Reply"
+    modalPreClassName="reply"
+  />
+);
 
 const Nav = ({
   unread,
@@ -246,7 +299,7 @@ const Reader = ({
           </div>
 
           <div className="pure-u-1-2 email-content-controls">
-            <a className="pure-button secondary-button">Reply</a>
+            <a id="reply-button" className="pure-button secondary-button" href="#">Reply</a>
             <a className="pure-button secondary-button">Forward</a>
             <a className="pure-button secondary-button">Move to</a>
           </div>
@@ -285,17 +338,30 @@ const App = ({
     />
     <Reader email={selectedEmail} />
     <ComposeModal
-      onClick={(to, text, subject, thread_id) => 
+      onClick={(to, text, subject) => {
         store.dispatch({
           type: 'SEND_EMAIL',
           to,
           text,
           subject,
-          thread_id,
           timestamp: new Date().toISOString()
-        })
-      }
-      buttonName="Send"
+        });
+        panel.hide();
+      }}
+    />
+    <ReplyModal 
+      onClick={(to, text, subject, thread_id) => {
+        store.dispatch({
+          type: 'SEND_REPLY',
+          to,
+          text,
+          subject,
+          thread_id: selectedEmail.get('thread_id'),
+          timestamp: new Date().toISOString()
+        });
+        replyPanel.hide();
+      }}
+      toEmail="a@example.com"
     />
   </div>
 };
