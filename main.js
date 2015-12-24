@@ -5,6 +5,12 @@ import thunk from 'redux-thunk';
 import { Map, List, fromJS } from 'immutable';
 import generateRandomString from './lib/generateRandomString';
 import { fetchInbox, fetchSentItems, fetchUnread } from './lib/fetchDocuments';
+import { Nav } from './components/Nav';
+import { EmailList } from './components/EmailList';
+import { Reader } from './components/Reader';
+import { ComposeModal } from './components/ComposeModal';
+import { ReplyModal } from './components/ReplyModal';
+import { ForwardModal } from './components/ForwardModal';
 
 const FETCH_BOX = 'FETCH_BOX';
 const SEND_EMAIL = 'SEND_EMAIL';
@@ -151,227 +157,11 @@ const fetchAndSelectBox = box => (
   }
 );
 
-const Modal = ({
-  onClick,
-  buttonName,
-  toEmail,
-  modalPreClassName
-}) => {
-  let to, subject, text;
-  return <div id={modalPreClassName+"-email-content"}>
-    <div className="yui3-widget-bd">
-      <form>
-        <fieldset>
-          { toEmail ?
-            '' :
-              <p>
-                <label>To</label><br/>
-                <input ref={node => {
-                  to = node;
-                }} type="email" id="compose-email-to" placeholder="" />
-            </p>
-            }
-            <p>
-              <label>Subject</label><br/>
-              <input ref={node => {
-                subject = node;
-              }} type="text" id="compose-email-subject" placeholder="" />
-          </p>
-          <p>
-            <textarea ref={node => {
-              text = node;
-            }} id="compose-email-body" placeholder=""></textarea>
-        </p>
-      </fieldset>
-      <button onClick={e => {
-        e.preventDefault();
-        const _text = text.value || '';
-        const _subject = subject.value || '';
-        const _to = !!!to ?
-          toEmail :
-            to.value.split(',');
-        if (_to.length === 0)
-          alert('Please specify the email address');
-        onClick(_to, _text, _subject, undefined)
-      }}>{buttonName}</button>
-  </form>
-  </div>
-  </div>;
-};
-
-const ComposeModal = ({
-  onClick,
-}) => (
-  <Modal
-    onClick={onClick}
-    buttonName="Send"
-    modalPreClassName="compose"
-  />
-);
-
-const ReplyModal = ({
-  onClick,
-  toEmail
-}) => (
-  <Modal 
-    onClick={onClick}
-    toEmail={toEmail}
-    buttonName="Reply"
-    modalPreClassName="reply"
-  />
-);
-
-const ForwardModal = ({
-  to,
-  onClick
-}) => {
-  return <div id="forward-email-content">
-    <div className="yui3-widget-bd">
-      <form>
-        <fieldset>
-          <p>
-            <label>To</label><br/>
-            <input ref={node => {
-              to = node;
-            }} type="email" id="forward-email-to" placeholder="" />
-        </p>
-      </fieldset>
-      <button onClick={e => {
-        e.preventDefault();
-        const _to = to.value.split(',');
-        if (_to.length === 0)
-          alert('Please specify the email address');
-        onClick(_to)
-        forwardPanel.hide();
-      }}>
-      "Forward"
-    </button>
-  </form>
-</div>
-  </div>;
-};
-
-const Nav = ({
-  unread,
-  onClick
-}) => (
-  <div className="pure-u id-nav">
-    <a href="#nav" className="nav-menu-button">Menu</a>
-
-    <div className="nav-inner">
-      <button id="compose-button" className="pure-button primary-button" href="#">Compose</button>
-
-      <div className="pure-menu pure-menu-open">
-        <ul>
-          <li><a onClick={e => {
-            e.preventDefault();
-            onClick('inbox')
-          }} href="#">Inbox <span className="email-count">({unread})</span></a></li>
-          <li><a href="#">Important</a></li>
-          <li><a onClick={e => {
-            e.preventDefault();
-            onClick('sent');
-          }} href="#">Sent</a></li>
-          <li><a href="#">Drafts</a></li>
-          <li><a href="#">Trash</a></li>
-          <li className="pure-menu-heading">Labels</li>
-          <li><a href="#"><span className="email-label-personal"></span>Personal</a></li>
-          <li><a href="#"><span className="email-label-work"></span>Work</a></li>
-          <li><a href="#"><span className="email-label-travel"></span>Travel</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-);
-
-const EmailItem = ({
-  name,
-  unread,
-  subject,
-  children,
-  onClick,
-  selected
-}) => {
-  let classes = 'email-item pure-g';
-  if (selected)
-    classes += ' email-item-selected';
-  if (unread)
-    classes += ' email-item-unread';
-  return (
-    <div className={classes} onClick={() =>
-      {
-        onClick();
-      }}>
-      <div className="pure-u">
-        <img className="email-avatar" alt={name + '\'s avatar'} src="https://avatars3.githubusercontent.com/u/8316625?v=3&s=460" height="65" width="65"/>
-      </div>
-      <div className="pure-u-3-4">
-        <h5 className="email-name">{name}</h5>
-        <h4 className="email-subject">{subject}</h4>
-        <p className="email-desc">
-          {children}
-        </p>
-      </div>
-    </div>
-  );
-};
-
-const EmailList = ({
-  emails,
-  onEmailItemClick,
-  selected
-}) => (
-  <div className="pure-u id-list"> 
-    <div className="content">
-      {emails ? emails.map((email, i) => {
-        return <EmailItem
-          onClick={() => {
-            onEmailItemClick(i);
-          }}
-          key={i}
-          selected={selected === i}
-          name={email.getIn(['message', 'from', 'name'])}
-          unread={false}
-          subject={email.getIn(['message', 'subject'])}>
-          {email.getIn(['message', 'text'])}
-        </EmailItem>
-        }) : ''}
-      </div>
-  </div> 
-);
-
-const Reader = ({
-  email
-}) => (
-  <div className="pure-u id-main"> 
-    <div className="content">
-      <div className="email-content pure-g">
-        <div className="email-content-header pure-g">
-          <div className="pure-u-1-2">
-            <h1 className="email-content-title">{email ? email.getIn(['message', 'subject']) : ''}</h1>
-            <p className="email-content-subtitle">
-              From <a>{email ? email.getIn(['message', 'from', 'name']): ''}</a> at <span>{email ? email.getIn(['message', 'timestamp']): ''}</span>
-            </p>
-          </div>
-
-          <div className="pure-u-1-2 email-content-controls">
-            <a id="reply-button" className="pure-button secondary-button" href="#">Reply</a>
-            <a id="forward-button" className="pure-button secondary-button">Forward</a>
-            <a className="pure-button secondary-button">Move to</a>
-          </div>
-        </div>
-
-        <div className="email-content-body pure-u-1" dangerouslySetInnerHTML={{__html: email ? email.getIn(['message', 'html']): ''}} />
-      </div>
-    </div>
-  </div> 
-);
-
 const App = ({
   emails,
   selectedBox,
   unread,
-  selectedEmailIndex
+  selectedEmailIndex = 0
 }) => {
   const selectedEmails = emails.get(selectedBox);
   const selectedEmail = selectedEmails.get(selectedEmailIndex);
@@ -392,7 +182,35 @@ const App = ({
       }}
       selected={selectedEmailIndex}
     />
-    <Reader email={selectedEmail} />
+    {console.log(selectedEmail)}
+    <Reader
+      subject={
+        selectedEmail.
+          getIn([
+            'message',
+            'subject'
+          ]) 
+      }
+      name={
+        selectedEmail.
+          getIn([
+            'message',
+            'from',
+            'name'])
+      }
+      timestamp={
+        selectedEmail.
+          getIn([
+            'message',
+            'timestamp'])
+      }
+      html={
+        selectedEmail.
+          getIn([
+            'message',
+            'html'])
+      }
+    />
     <ComposeModal
       onClick={(to, text, subject) => {
         store.dispatch({
@@ -406,12 +224,19 @@ const App = ({
       }}
     />
     <ReplyModal 
-      onClick={(to, text, subject, thread_id) => {
+      onClick={(text) => {
         store.dispatch({
           type: 'SEND_REPLY',
-          to,
+          to: selectedEmail.getIn([
+            'message',
+            'headers',
+            'Reply-To'
+          ]),
           text,
-          subject,
+          subject: selectedEmail.getIn([
+            'message',
+            'subject'
+          ]),
           thread_id: selectedEmail.get('thread_id'),
           timestamp: new Date().toISOString()
         });
@@ -427,6 +252,7 @@ const App = ({
           to,
           timestamp: new Date().toISOString()
         });
+        forwardPanel.hide();
       }}
     />
   </div>
