@@ -23,7 +23,7 @@ import {
   sendReply,
   forwardEmail,
 } from './actionCreators';
-import { emailApp } from './reducers/index';
+import { emailApp } from './reducers/emailApp';
 
 const storeWithMiddleware = applyMiddleware(thunk)(createStore);
 const store = storeWithMiddleware(emailApp);
