@@ -22,9 +22,7 @@ const FORWARD_EMAIL = 'FORWARD_EMAIL';
 const reducer = (state = fromJS({
   selectedEmailIndex: 0,
   selectedBox: 'inbox',
-  userInfo: {
-    email: 'a@example.com',
-    name: 'A'
+  userInfo: { email: 'a@example.com', name: 'A'
   },
   emails: {
     inbox: fetchInbox('a@example.com'),
@@ -151,6 +149,10 @@ const fetchAndSelectBox = box => (
       box: box
     });
     dispatch({
+      type: 'SELECT_EMAIL_TO_READ',
+      index: 0
+    });
+    dispatch({
       type: 'SELECT_BOX',
       box: box
     });
@@ -182,7 +184,6 @@ const App = ({
       }}
       selected={selectedEmailIndex}
     />
-    {console.log(selectedEmail)}
     <Reader
       subject={
         selectedEmail.
