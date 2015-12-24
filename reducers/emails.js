@@ -17,9 +17,9 @@ const SEND_EMAIL = 'SEND_EMAIL';
 const FETCH_BOX = 'FETCH_BOX';
 
 export const emails = (state = fromJS({
-  inbox: fetchInbox('a@example.com'),
-  outbox: [],
-  sent: []
+  inbox: fromJS(fetchInbox('a@example.com')),
+  outbox: List([]),
+  sent: List([])
 }), action) => {
   switch (action.type) {
     case FORWARD_EMAIL:

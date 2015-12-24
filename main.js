@@ -23,10 +23,10 @@ import {
   sendReply,
   forwardEmail,
 } from './actionCreators';
-import { reducer } from './reducers/index';
+import { emailApp } from './reducers/index';
 
 const storeWithMiddleware = applyMiddleware(thunk)(createStore);
-const store = storeWithMiddleware(reducer);
+const store = storeWithMiddleware(emailApp);
 
 const App = ({
   emails,
@@ -116,8 +116,7 @@ const App = ({
 };
 
 const render = () => {
-  const state = store.getState().toObject();
-  const t = state.selectedBox;
+  const state = store.getState();
   ReactDOM.render(
     <App {...state}/>,
     document.getElementById('app')
