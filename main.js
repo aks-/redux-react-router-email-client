@@ -11,6 +11,13 @@ import { Reader } from './components/Reader';
 import { ComposeModal } from './components/ComposeModal';
 import { ReplyModal } from './components/ReplyModal';
 import { ForwardModal } from './components/ForwardModal';
+import { 
+  fetchAndSelectBox,
+  selectEmailToRead,
+  sendEmail,
+  sendReply,
+  forwardEmail,
+} from './actionCreators';
 
 const FETCH_BOX = 'FETCH_BOX';
 const SEND_EMAIL = 'SEND_EMAIL';
@@ -142,23 +149,6 @@ const reducer = (state = fromJS({
 const storeWithMiddleware = applyMiddleware(thunk)(createStore);
 const store = storeWithMiddleware(reducer);
 
-const fetchAndSelectBox = box => (
-  dispatch => {
-    dispatch({
-      type: 'FETCH_BOX',
-      box: box
-    });
-    dispatch({
-      type: 'SELECT_EMAIL_TO_READ',
-      index: 0
-    });
-    dispatch({
-      type: 'SELECT_BOX',
-      box: box
-    });
-  }
-);
-
 const App = ({
   emails,
   selectedBox,
@@ -177,10 +167,7 @@ const App = ({
     <EmailList
       emails={selectedEmails}
       onEmailItemClick={(index) => {
-        store.dispatch({
-          type: 'SELECT_EMAIL_TO_READ',
-          index
-        });
+        store.dispatch(selectEmailToRead(index));
       }}
       selected={selectedEmailIndex}
     />
@@ -214,45 +201,35 @@ const App = ({
     />
     <ComposeModal
       onClick={(to, text, subject) => {
-        store.dispatch({
-          type: 'SEND_EMAIL',
-          to,
-          text,
-          subject,
-          timestamp: new Date().toISOString()
-        });
+        store.dispatch(sendEmail(to, text, subject));
         panel.hide();
       }}
     />
     <ReplyModal 
       onClick={(text) => {
-        store.dispatch({
-          type: 'SEND_REPLY',
-          to: selectedEmail.getIn([
-            'message',
-            'headers',
-            'Reply-To'
-          ]),
-          text,
-          subject: selectedEmail.getIn([
-            'message',
-            'subject'
-          ]),
-          thread_id: selectedEmail.get('thread_id'),
-          timestamp: new Date().toISOString()
-        });
-        replyPanel.hide();
+        const email = selectedEmail.getIn([
+          'message',
+          'headers',
+          'Reply-To'
+        ]);
+        const subject = selectedEmail.getIn([
+          'message',
+          'subject'
+        ]);
+        const thread_id = selectedEmail.get('thread_id');
+        store.dispatch(
+          sendReply(
+            email,
+            text,
+            subject,
+            thread_id
+          ));
+          replyPanel.hide();
       }}
-      toEmail="a@example.com"
     />
     <ForwardModal
       onClick={(to) => {
-        store.dispatch({
-          type: 'FORWARD_EMAIL',
-          email: selectedEmail,
-          to,
-          timestamp: new Date().toISOString()
-        });
+        store.dispatch(forwardEmail(to, selectedEmail));
         forwardPanel.hide();
       }}
     />
