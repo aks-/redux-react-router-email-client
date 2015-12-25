@@ -10,119 +10,36 @@ import {
   List,
   fromJS
 } from 'immutable';
-import { Nav } from './components/Nav';
-import { EmailList } from './components/EmailList';
-import { Reader } from './components/Reader';
-import { ComposeModal } from './components/ComposeModal';
-import { ReplyModal } from './components/ReplyModal';
-import { ForwardModal } from './components/ForwardModal';
-import { 
-  fetchAndSelectBox,
-  selectEmailToRead,
-  sendEmail,
-  sendReply,
-  forwardEmail,
-} from './actionCreators';
+import { Provider } from 'react-redux';
+import { Nav } from './containers/Nav';
+import { EmailList } from './containers/EmailList';
+import { Reader } from './containers/Reader';
+import { ComposeModal } from './containers/ComposeModal';
+import { ReplyModal } from './containers/ReplyModal';
+import { ForwardModal } from './containers/ForwardModal';
+import { fetchAndSelectBox } from './actionCreators';
 import { emailApp } from './reducers/emailApp';
 
-const storeWithMiddleware = applyMiddleware(thunk)(createStore);
-const store = storeWithMiddleware(emailApp);
-
-const App = ({
-  emails,
-  selectedBox,
-  unread,
-  selectedEmailIndex = 0
-}) => {
-  const selectedEmails = emails.get(selectedBox);
-  const selectedEmail = selectedEmails.get(selectedEmailIndex);
+const App = () => {
   return <div className="pure-g-r content id-layout">
-    <Nav 
-      unread={unread}
-      onClick={(box) => {
-        store.dispatch(fetchAndSelectBox(box));
-      }}
-    />
-    <EmailList
-      emails={selectedEmails}
-      onEmailItemClick={(index) => {
-        store.dispatch(selectEmailToRead(index));
-      }}
-      selected={selectedEmailIndex}
-    />
-    <Reader
-      subject={
-        selectedEmail.
-          getIn([
-            'message',
-            'subject'
-          ]) 
-      }
-      name={
-        selectedEmail.
-          getIn([
-            'message',
-            'from',
-            'name'])
-      }
-      timestamp={
-        selectedEmail.
-          getIn([
-            'message',
-            'timestamp'])
-      }
-      html={
-        selectedEmail.
-          getIn([
-            'message',
-            'html'])
-      }
-    />
-    <ComposeModal
-      onClick={(to, text, subject) => {
-        store.dispatch(sendEmail(to, text, subject));
-        panel.hide();
-      }}
-    />
-    <ReplyModal 
-      onClick={(text) => {
-        const email = selectedEmail.getIn([
-          'message',
-          'headers',
-          'Reply-To'
-        ]);
-        const subject = selectedEmail.getIn([
-          'message',
-          'subject'
-        ]);
-        const thread_id = selectedEmail.get('thread_id');
-        store.dispatch(
-          sendReply(
-            email,
-            text,
-            subject,
-            thread_id
-          ));
-          replyPanel.hide();
-      }}
-    />
-    <ForwardModal
-      onClick={(to) => {
-        store.dispatch(forwardEmail(to, selectedEmail));
-        forwardPanel.hide();
-      }}
-    />
+    <Nav />
+    <EmailList />
+    <Reader />
+    <ComposeModal />
+    <ReplyModal />
+    <ForwardModal />
   </div>
 };
 
+const storeWithMiddleware = applyMiddleware(thunk)(createStore);
+
 const render = () => {
-  const state = store.getState();
   ReactDOM.render(
-    <App {...state}/>,
+    <Provider store={storeWithMiddleware(emailApp)}>
+      <App />
+    </Provider>,
     document.getElementById('app')
   );
 };
 
 render();
-
-store.subscribe(render);

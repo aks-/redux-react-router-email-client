@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Reader = ({
+export const Main = ({
   subject,
   name,
   timestamp,
@@ -27,5 +27,3 @@ export const Reader = ({
     </div>
   </div> 
 );
-
-
