@@ -39,17 +39,10 @@ export const Nav = (props, { store }) => {
     name: 'Travel',
     className: 'email-label-travel'
   }];
-  return (
-    <div className="pure-u id-nav">
-      <a href="#nav" className="nav-menu-button">Menu</a>
-      <div className="nav-inner">
-        <button id="compose-button" className="pure-button primary-button" href="#">Compose</button>
-        <div className="pure-menu pure-menu-open">
-          <NavMenu items={items} labels={labels} /> 
-        </div>
-      </div>
-    </div>
-  );
+  return <NavMenu
+    items={items}
+    labels={labels}
+  /> 
 };
 Nav.contextTypes = {
   store: React.PropTypes.object
