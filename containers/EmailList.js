@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { EmailItem } from '../components/EmailItem';
-import { selectedEmailToRead } from '../actionCreators';
+import { selectEmailToRead } from '../actionCreators';
 
 export class EmailList extends Component {
 
