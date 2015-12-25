@@ -1,61 +1,71 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { EmailItem } from '../components/EmailItem';
 import { selectEmailToRead } from '../actionCreators';
 
-export class EmailList extends Component {
+const mapStateToProps = (state) => {
+  const selectedBox = state.selectedBox;
+  const emails = state.emails.get(selectedBox);
+  const selected = state.selectedEmailIndex;
 
-  componentDidMount () {
-    const { store } = this.context;
-    this.unsubscribe = store.subscribe(() => {
-      this.forceUpdate();
-    });
-  }
-
-  componentWillUnmount () {
-    this.unsubscribe();
-  }
-
-  render () {
-    const { store } = this.context;
-    const state = store.getState();
-    const selectedBox = state.selectedBox;
-    const emails = state.emails.get(selectedBox);
-    const selected = state.selectedEmailIndex;
-    return <div className="pure-u id-list"> 
-      <div className="content">
-        {emails ? emails.map((email, i) => {
-          return <EmailItem
-            onClick={() => {
-              store.dispatch(selectEmailToRead(i));
-            }}
-            key={i}
-            selected={selected === i}
-            name={
-              email.
-                getIn([
-                  'message',
-                  'from',
-                  'name'])
-            }
-            unread={false}
-            subject={
-              email.
-                getIn([
-                  'message',
-                  'subject'])
-            }>
-            {
-              email.
-                getIn([
-                  'message',
-                  'text'])
-            }
-          </EmailItem>
-          }) : ''}
-        </div>
-      </div> 
-  }
-}
-EmailList.contextTypes = {
-  store: React.PropTypes.object
+  return {
+    emails,
+    selected
+  };
 };
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onEmailItemClick: (index) => {
+      dispatch(
+        selectEmailToRead(index)
+      );
+    }
+  };
+};
+
+const EmailList = ({
+  emails,
+  selected,
+  onEmailItemClick
+}) => (
+  <div className="pure-u id-list"> 
+    <div className="content">
+      {emails ? emails.map((email, i) => {
+        return <EmailItem
+          onClick={() => {
+            onEmailItemClick(i);
+          }}
+          key={i}
+          selected={selected === i}
+          name={
+            email.
+              getIn([
+                'message',
+                'from',
+                'name'])
+          }
+          unread={false}
+          subject={
+            email.
+              getIn([
+                'message',
+                'subject'])
+          }>
+          {
+            email.
+              getIn([
+                'message',
+                'text'])
+          }
+        </EmailItem>
+        }) : ''}
+    </div>
+  </div> 
+);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EmailList);
+

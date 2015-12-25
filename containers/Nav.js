@@ -1,18 +1,34 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { NavMenu } from '../components/NavMenu';
 import { fetchAndSelectBox } from '../actionCreators';
 
-export const Nav = (props, { store }) => {
-  const state = store.getState();
-  const unread = state.unread;
-  const onBoxClick = (box) => {
-    store.dispatch(fetchAndSelectBox(box));
+const mapStateToProps = (state) => {
+  const { unread } = state;
+  return {
+    unread
   };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onBoxClick: (box) => {
+      dispatch(
+        fetchAndSelectBox(box)
+      );
+    }
+  };
+};
+
+export const Nav = (props) => {
+
+  const { unread, onBoxClick } = props;
+
   const items = [{
     name: 'Inbox',
     onClick: (e) => {
       e.preventDefault();
-      store.dispatch(fetchAndSelectBox('inbox'));
+      onBoxClick('inbox'); 
     },
     childClassName: 'email-count',
     children: unread
@@ -22,7 +38,7 @@ export const Nav = (props, { store }) => {
     name: 'Sent',
     onClick: (e) => {
       e.preventDefault();
-      store.dispatch(fetchAndSelectBox('sent'));
+      onBoxClick('sent');
     }
   }, {
     name: 'Drafts'
@@ -44,6 +60,8 @@ export const Nav = (props, { store }) => {
     labels={labels}
   /> 
 };
-Nav.contextTypes = {
-  store: React.PropTypes.object
-};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Nav);

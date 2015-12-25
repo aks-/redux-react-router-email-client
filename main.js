@@ -11,13 +11,12 @@ import {
   fromJS
 } from 'immutable';
 import { Provider } from 'react-redux';
-import { Nav } from './containers/Nav';
-import { EmailList } from './containers/EmailList';
-import { Reader } from './containers/Reader';
-import { ComposeModal } from './containers/ComposeModal';
-import { ReplyModal } from './containers/ReplyModal';
-import { ForwardModal } from './containers/ForwardModal';
-import { fetchAndSelectBox } from './actionCreators';
+import Nav from './containers/Nav';
+import EmailList from './containers/EmailList';
+import Reader from './containers/Reader';
+import ComposeModal from './containers/ComposeModal';
+import ReplyModal from './containers/ReplyModal';
+import ForwardModal from './containers/ForwardModal';
 import { emailApp } from './reducers/emailApp';
 
 const App = () => {
