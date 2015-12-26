@@ -11,6 +11,9 @@ import {
   fromJS
 } from 'immutable';
 import { Provider } from 'react-redux';
+import { Router, Route } from 'react-router';
+import { createHistory } from 'history';
+import { syncReduxAndRouter } from 'redux-simple-router';
 import Nav from './containers/Nav';
 import EmailList from './containers/EmailList';
 import Reader from './containers/Reader';
@@ -18,27 +21,22 @@ import ComposeModal from './containers/ComposeModal';
 import ReplyModal from './containers/ReplyModal';
 import ForwardModal from './containers/ForwardModal';
 import { emailApp } from './reducers/emailApp';
-
-const App = () => {
-  return <div className="pure-g-r content id-layout">
-    <Nav />
-    <EmailList />
-    <Reader />
-    <ComposeModal />
-    <ReplyModal />
-    <ForwardModal />
-  </div>
-};
+import { Root } from './components/Root';
+import { App } from './components/App';
 
 const storeWithMiddleware = applyMiddleware(thunk)(createStore);
+const history = createHistory();
+const store = storeWithMiddleware(emailApp);
 
-const render = () => {
-  ReactDOM.render(
-    <Provider store={storeWithMiddleware(emailApp)}>
-      <App />
-    </Provider>,
-    document.getElementById('app')
-  );
-};
+syncReduxAndRouter(history, store);
 
-render();
+ReactDOM.render(
+  <Provider store={store}>
+    <Router path="/" component={Root}>
+      <Route path="/" component={App} />
+      <Route path="inbox" component={App} />
+      <Route path="sent" component={App} />
+    </Router>
+  </Provider>,
+  document.getElementById('app')
+);

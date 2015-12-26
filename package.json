@@ -9,13 +9,14 @@
   "author": "Ashok <coderatlabs@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "history": "^1.13.1",
+    "history": "^1.17.0",
     "immutable": "^3.7.6",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.5",
-    "react-router": "^1.0.2",
+    "react-router": "^1.0.3",
     "redux": "^3.0.5",
+    "redux-simple-router": "^1.0.2",
     "redux-thunk": "^1.0.2"
   },
   "devDependencies": {

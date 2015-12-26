@@ -1,3 +1,5 @@
+import { pushPath } from 'redux-simple-router';
+
 export const fetchAndSelectBox = box => (
   dispatch => {
     dispatch({
@@ -8,6 +10,9 @@ export const fetchAndSelectBox = box => (
       type: 'SELECT_EMAIL_TO_READ',
       index: 0
     });
+    dispatch( 
+            pushPath(`/${box}`)
+           ); 
     dispatch({
       type: 'SELECT_BOX',
       box: box

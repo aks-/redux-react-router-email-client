@@ -4,6 +4,7 @@ import {
   List,
   fromJS
 } from 'immutable';
+import { routeReducer } from 'redux-simple-router';
 import generateRandomString from '../lib/generateRandomString';
 import { emails } from './emails';
 import { boxSelector } from './boxSelector';
@@ -16,5 +17,6 @@ export const emailApp = combineReducers({
   selectedBox: boxSelector,
   userInfo,
   emails,
-  unread
+  unread,
+  routing: routeReducer
 });

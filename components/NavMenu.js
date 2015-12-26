@@ -16,7 +16,7 @@ export const NavMenu = ({
               <a href="#" onClick={item.onClick}>
                 {item.name}
                 <span className={item.childClassName}>
-                  ({item.children})
+                  {item.children ? `(${item.children})` : ''}
                 </span>
               </a>
             </li>
