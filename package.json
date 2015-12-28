@@ -4,13 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prestart": "webpack-dev-server",
+    "start": "./node_modules/babel-cli/bin/babel-node.js --debug --presets es2015 -- server/app.js  --debug",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ashok <coderatlabs@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.13.3",
     "history": "^1.17.0",
     "immutable": "^3.7.6",
+    "kraken-js": "^2.0.1",
+    "nano": "^6.1.5",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.5",
@@ -20,6 +25,7 @@
     "redux-thunk": "^1.0.2"
   },
   "devDependencies": {
+    "babel-cli": "^6.3.17",
     "babel-core": "^6.3.17",
     "babel-loader": "^6.2.0",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",
