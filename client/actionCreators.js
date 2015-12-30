@@ -1,23 +1,43 @@
 import { pushPath } from 'redux-simple-router';
+import fetch from 'isomorphic-fetch';
 
 export const fetchAndSelectBox = box => (
-  dispatch => {
-    dispatch({
-      type: 'FETCH_BOX',
-      box: box
-    });
-    dispatch({
-      type: 'SELECT_EMAIL_TO_READ',
-      index: 0
-    });
-    dispatch( 
-            pushPath(`/${box}`)
-           ); 
-    dispatch({
-      type: 'SELECT_BOX',
-      box: box
-    });
-  }
+  dispatch => 
+  fetch(`http://localhost:3000/${box}`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "email": "a@example.com"
+    })
+  })
+  .then(response => response.json())
+  .then(json => 
+        dispatch({
+          type: 'FETCH_BOX',
+          box: box,
+          emails: json
+        })
+       )
+       .then(() => 
+             dispatch({
+               type: 'SELECT_EMAIL_TO_READ',
+               index: 0
+             })
+            )
+            .then(() => 
+                  dispatch( 
+                           pushPath(`/${box}`)
+                          )
+                 )
+                 .then(() => 
+                       dispatch({
+                         type: 'SELECT_BOX',
+                         box: box
+                       })
+                      )
 );
 
 export const selectEmailToRead = index => (
@@ -54,5 +74,27 @@ export const forwardEmail = (to, email) => (
     email,
     to,
     timestamp: new Date().toISOString()
+  }
+);
+
+export const fetchUnread = () => (
+  dispatch => {
+    fetch(`http://localhost:3000/unread`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "email": "a@example.com"
+      })
+    })
+    .then(response => response.json())
+    .then(json => 
+          dispatch({
+            type: 'GET_UNREAD',
+            unread: json
+          })
+         )
   }
 );
