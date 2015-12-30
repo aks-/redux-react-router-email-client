@@ -1,0 +1,11 @@
+{
+  "_id": "emails",
+  "views": {
+    "byFromEmail": {
+      "map": "function(doc) { if (doc.type === 'message') { emit([doc.message.from.email], doc) } }"
+    },
+    "byToEmail": {
+      "map": "function(doc) { if (doc.type === 'message') { for (var x in doc.message.to) emit(x.email, doc) } }"
+    }
+  }
+}
