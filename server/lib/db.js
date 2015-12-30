@@ -1,11 +1,11 @@
 import Promise from 'bluebird';
+import Nano from 'nano';
 import config from '../config/dbConfig';
 
 const url = `http://${config.user}:${config.pass}@${config.host}:${config.port}`;
-import Nano from 'nano';
 const nano = Nano(url);
 const dbName = config.name;
-const db = Promise.promisifyAll(nano.db.create)(dbName);
+const db = Promise.promisifyAll(nano.db.use(dbName));
 
 export const createDb = () => (
   Promise.promisify(nano.db.create)(dbName)
@@ -54,10 +54,10 @@ export const update = (key, updatedDoc) => (
   })
 );
 
-const destroy = (id, rev) => (
+export const destroy = (id, rev) => (
   db.destroyAsync(id, rev)
 );
 
-const prepareView = (view, viewName) => (
+export const prepareView = (view, viewName) => (
   db.insertAsync(view, viewName)
 );
