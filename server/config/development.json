@@ -1,0 +1,47 @@
+{
+  "middleware": {
+
+    "cookieParser": {
+      "module": {
+        "arguments": [ "iamnoughtouthtoken" ]
+      }
+    },
+
+    "session": {
+      "module": {
+        "arguments": [
+          {
+            "secret": "boomboomboomer",
+            "cookie": {
+              "path": "/",
+              "httpOnly": true,
+              "maxAge": null
+            },
+            "resave": true,
+            "saveUninitialized": true,
+            "proxy": null
+          }
+        ]
+      }
+    },
+
+    "appsec": {
+      "module": {
+        "arguments": [{
+          "csrf": false,
+          "xframe": "SAMEORIGIN",
+          "p3p": false,
+          "csp": false
+        }]
+      }
+    },
+
+    "cors": {
+      "enabled": true,
+      "priority": 119,
+      "module": {
+        "name": "path:../server/middlewares/cors"
+      }
+    }
+  }
+}
