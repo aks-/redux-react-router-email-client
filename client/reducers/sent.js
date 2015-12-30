@@ -97,7 +97,7 @@ export const sent = (state = List([]), action) => {
     case FETCH_BOX:
        if (state.size > 0)
         return state;
-      return List(fromJS(fetchSentItems('a@example.com')));
+      return List(fromJS(action.emails));
     default:
       return state;
   }

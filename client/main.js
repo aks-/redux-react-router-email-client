@@ -23,20 +23,33 @@ import ForwardModal from './containers/ForwardModal';
 import { emailApp } from './reducers/emailApp';
 import { Root } from './components/Root';
 import { App } from './components/App';
+import { 
+fetchAndSelectBox,
+fetchUnread
+} from './actionCreators';
 
-const storeWithMiddleware = applyMiddleware(thunk)(createStore);
+const storeWithMiddleware = applyMiddleware(
+  thunk
+)(createStore);
+
 const history = createHistory();
 const store = storeWithMiddleware(emailApp);
 
 syncReduxAndRouter(history, store);
 
-ReactDOM.render(
-  <Provider store={store}>
-    <Router path="/" component={Root}>
-      <Route path="/" component={App} />
-      <Route path="inbox" component={App} />
-      <Route path="sent" component={App} />
-    </Router>
-  </Provider>,
-  document.getElementById('app')
-);
+store.dispatch(fetchAndSelectBox('inbox'))
+.then(() => {
+  store.dispatch(fetchUnread());
+})
+.then(()=> {
+  ReactDOM.render(
+    <Provider store={store}>
+      <Router path="/" component={Root}>
+        <Route path="/" component={App} />
+        <Route path="inbox" component={App} />
+        <Route path="sent" component={App} />
+      </Router>
+    </Provider>,
+    document.getElementById('app')
+  );
+});

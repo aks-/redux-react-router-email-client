@@ -17,7 +17,7 @@ const SEND_EMAIL = 'SEND_EMAIL';
 const FETCH_BOX = 'FETCH_BOX';
 
 export const emails = (state = fromJS({
-  inbox: fromJS(fetchInbox('a@example.com')),
+  inbox: List([]),
   outbox: List([]),
   sent: List([])
 }), action) => {
