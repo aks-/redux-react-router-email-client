@@ -126,5 +126,21 @@ export default {
       "important": false
     },
     type: "message"
+  }, {
+    name: "Ashok",
+    email: "ashok@snake-eyes.com",
+    type: "user"
+  }, {
+    name: "Dan",
+    email: "dan@snake-eyes.com",
+    type: "user"
+  }, {
+    name: "Aria",
+    email: "aria@snake-eyes.com",
+    type: "user"
+  }, {
+    name: "Pete",
+    email: "pete@snake-eyes.com",
+    type: "user"
   }]
 };
