@@ -28,7 +28,7 @@ module.exports = (router) => {
   });
 
   router.post('/unread', (req, res) => {
-    var view = 'byToEmail';
+    const view = 'byToEmail';
     const key = req.body.email;
 
     getItems(design, view, {
@@ -38,6 +38,90 @@ module.exports = (router) => {
       var unread = items.length;
       res.status(200).json(unread);
     })
+  });
+
+  router.post('/reply', (req, res) => {
+    const { to, text, subject, thread_id, from } = req.body;
+    const reply = {
+      thread_id: thread_id,
+      message: {
+        "html": `<p>${text}</p>`,
+        "text": text,
+        "subject": subject,
+        "from": from,
+        "unread": true,
+        "to": to,
+        "timestamp": new Date().toISOString(),
+        "headers": {
+          "Reply-To": ''
+        },
+        "important": false
+      },
+      type: "message"
+    };
+
+    db.save(reply)
+    .then(() => {
+      res.status(200).json(reply);
+    });
+  });
+
+  router.post('/forward', (req, res) => {
+    const { to, html, text, subject, from } = req.body;
+
+    const email = {
+      message: {
+        "html": `<p>begin forwarded message</p></br>${html}`,
+        "text": `begin forwarded message --- ${text}`,
+        "subject": subject,
+        "from": from,
+        "unread": true,
+        "to": to,
+        "timestamp": new Date().toISOString(),
+        "headers": {
+          "Reply-To": {
+            "name": "A",
+            "email": "a@example.com"
+          }
+        },
+        "important": false
+      },
+      type: "message"
+    };
+
+    db.save(email)
+    .then(() => {
+      res.status(200).json(email);
+    });
+  });
+
+  router.post('/compose', (req, res) => {
+    const { to, text, subject } = req.body;
+
+      const email = { 
+        message: {
+          "html": `<p>${text}</p>`,
+          "text": text,
+          "subject": subject,
+          "from": {
+            "name": "A",
+            "email": "a@example.com"
+          }, //TODO how to resolve this
+          "unread": true,
+          "to": to,
+          "timestamp": new Date().toISOString(),
+          "headers": {
+            "Reply-To": 'a@example.com'
+          },
+          "important": false
+        },
+        type: "message"
+      }; 
+
+      db.save(email)
+      .then(() => {
+        res.status(200).json(email)
+      })
   });
 }; 
 
