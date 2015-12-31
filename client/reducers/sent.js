@@ -18,78 +18,19 @@ const FETCH_BOX = 'FETCH_BOX';
 export const sent = (state = List([]), action) => {
   switch (action.type) {
     case FORWARD_EMAIL:
-      const email = action.email;
-      const forwardEmail = {
-        id: generateRandomString(),
-        message: {
-          "html": `<p>begin forwarded message</p></br>${email.getIn(['message', 'html'])}`,
-          "text": `being forwarded message --- ${email.getIn(['message', 'text'])}`,
-          "subject": email.getIn(['message', 'subject']),
-          "from": {
-            name: 'A',
-            email: 'a@example.com'
-          }, //TODO how to resolve this
-          "unread": true,
-          "to": action.to,
-          "timestamp": action.timestamp,
-          "headers": {
-            "Reply-To": {
-              "name": "A",
-              "email": "a@example.com"
-            }
-          },
-          "important": false
-        }
-      };
+      const { email } = action;
       if (state.size > 0) 
-        return state.push(fromJS(forwardEmail));
+        return state.push(fromJS(email));
       return List(fromJS(fetchSentItems('a@example.com'))).
-        push(fromJS(forwardEmail));
+        push(fromJS(email));
     case SEND_REPLY:
-      const reply = {
-        id: generateRandomString(),
-        thread_id: action.thread_id,
-        message: {
-          "html": `<p>${action.text}</p>`,
-          "text": action.text,
-          "subject": action.subject,
-          "from": {
-            "name": "A",
-            "email": "a@example.com"
-          }, //TODO how to resolve this
-          "unread": true,
-          "to": action.to,
-          "timestamp": action.timestamp,
-          "headers": {
-            "Reply-To": action.replyTo
-          },
-          "important": false
-        }
-      };
+      const { reply } = action;
       if (state.size > 0)
         return state.push(fromJS(reply));
       return List(fromJS(fetchSentItems('a@example.com'))).
         push(fromJS(reply));
     case SEND_EMAIL:
-      const composedEmail = {
-        id: generateRandomString(),
-        message: {
-          "html": `<p>${action.text}</p>`,
-          "text": action.text,
-          "subject": action.subject,
-          "from": {
-            "name": "A",
-            "email": "a@example.com"
-          }, //TODO how to resolve this
-          "unread": true,
-          "to": action.to,
-          "timestamp": action.timestamp,
-          "headers": {
-            "Reply-To": action.replyTo
-          },
-          "important": false
-        }
-      };
+      const composedEmail = action.email;
       if (state.size > 0)
         return state.push(fromJS(composedEmail));
       return List(fromJS(fetchSentItems('a@example.com'))).

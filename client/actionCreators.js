@@ -48,33 +48,76 @@ export const selectEmailToRead = index => (
 );
 
 export const sendEmail = (to, text, subject) => (
-  {
-    type: 'SEND_EMAIL',
-    to,
-    text,
-    subject,
-    timestamp: new Date().toISOString()
-  }
+  dispatch =>
+  fetch('http://localhost:3000/compose', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      to,
+      text,
+      subject,
+    })
+  })
+  .then(response => response.json())
+  .then(json => 
+        dispatch({
+          type: 'SEND_EMAIL',
+          email: json
+        })
+       )
 );
 
-export const sendReply = (to, text, subject, thread_id) => (
-  {
-    type: 'SEND_REPLY',
-    to,
-    text,
-    subject,
-    thread_id,
-    timestamp: new Date().toISOString()
-  }
+export const sendReply = (to, text, subject, thread_id, from) => (
+  dispatch =>
+  fetch('http://localhost:3000/reply', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      to,
+      text,
+      subject,
+      thread_id,
+      from
+    })
+  })
+  .then(response => response.json())
+  .then(json => 
+        dispatch({
+          type: 'SEND_REPLY',
+          reply: json
+        })
+       )
 );
 
-export const forwardEmail = (to, email) => (
-  {
-    type: 'FORWARD_EMAIL',
-    email,
-    to,
-    timestamp: new Date().toISOString()
-  }
+export const forwardEmail = (to, html, text, subject, from) => (
+  dispatch =>
+  fetch('http://localhost:3000/forward', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      to,
+      html,
+      text,
+      subject,
+      from
+    })
+  })
+  .then(response => response.json())
+  .then(json => 
+        dispatch({
+          type: 'FORWARD_EMAIL',
+          email: json
+        })
+       )
 );
 
 export const fetchUnread = () => (
