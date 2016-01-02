@@ -26,83 +26,72 @@
 
     <script src="./dist/index.js"></script>
     <script>
-    YUI().use('node-base', 'node-event-delegate', function (Y) {
-
-      var menuButton = Y.one('.nav-menu-button'),
-        nav        = Y.one('.id-nav');
+      setTimeout(function() {
+      YUI().use('panel', function(Y) {
+        var menuButton = Y.one('.nav-menu-button'),
+        nav = Y.one('.id-nav');
 
         // Setting the active class name expands the menu vertically on small screens.
         menuButton.on('click', function (e) {
           nav.toggleClass('active');
-        });
+          });
 
-        // Your application code goes here...
+          // This just makes sure that the href="#" attached to the <a> elements
+            // don't scroll you back up the page.
+            Y.one('.content').delegate('click', function (e) {
+              e.preventDefault();
+              }, 'a[href="#"]');
 
-    });
-    </script>
+              var composeBtn = Y.one('#compose-button');
+              panel = new Y.Panel({
+                srcNode      : '#compose-email-content',
+                headerContent: 'Compose Email',
+                width        : 700,
+                zIndex       : 5,
+                centered     : true,
+                modal        : true,
+                visible      : false,
+                render       : true
+                });
 
-    <script>
-    YUI().use('node-base', 'node-event-delegate', function (Y) {
+                composeBtn.on('click', function(e) {
+                  panel.show(); 
+                  });
 
-      // This just makes sure that the href="#" attached to the <a> elements
-      // don't scroll you back up the page.
-      Y.one('.content').delegate('click', function (e) {
-        e.preventDefault();
-      }, 'a[href="#"]');
-    });
-    </script>
+                  var replyBtn = Y.one('#reply-button');
+                  replyPanel = new Y.Panel({
+                    srcNode      : '#reply-email-content',
+                    headerContent: 'Reply To Email',
+                    width        : 700,
+                    zIndex       : 5,
+                    centered     : true,
+                    modal        : true,
+                    visible      : false,
+                    render       : true
+                    });
 
-    <script>
-    YUI().use('panel', function(Y) {
-      var composeBtn = Y.one('#compose-button');
-      panel = new Y.Panel({
-        srcNode      : '#compose-email-content',
-        headerContent: 'Compose Email',
-        width        : 700,
-        zIndex       : 5,
-        centered     : true,
-        modal        : true,
-        visible      : false,
-        render       : true
-      });
+                    replyBtn.on('click', function(e) {
+                      replyPanel.show(); 
+                      });
 
-      composeBtn.on('click', function(e) {
-        panel.show(); 
-      });
+                      var forwardBtn = Y.one('#forward-button');
+                      forwardPanel = new Y.Panel({
+                        srcNode      : '#forward-email-content',
+                        headerContent: 'Forward Email',
+                        width        : 700,
+                        zIndex       : 5,
+                        centered     : true,
+                        modal        : true,
+                        visible      : false,
+                        render       : true
+                        });
 
-      var replyBtn = Y.one('#reply-button');
-      replyPanel = new Y.Panel({
-        srcNode      : '#reply-email-content',
-        headerContent: 'Reply To Email',
-        width        : 700,
-        zIndex       : 5,
-        centered     : true,
-        modal        : true,
-        visible      : false,
-        render       : true
-      });
+                        forwardBtn.on('click', function(e) {
+                          forwardPanel.show(); 
+                          });
 
-      replyBtn.on('click', function(e) {
-        replyPanel.show(); 
-      });
-
-      var forwardBtn = Y.one('#forward-button');
-      forwardPanel = new Y.Panel({
-        srcNode      : '#forward-email-content',
-        headerContent: 'Forward Email',
-        width        : 700,
-        zIndex       : 5,
-        centered     : true,
-        modal        : true,
-        visible      : false,
-        render       : true
-      });
-
-      forwardBtn.on('click', function(e) {
-        forwardPanel.show(); 
-      });
-
-    })
+                        })
+        }, 3000);
     </script>
 
   </body>
