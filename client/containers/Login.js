@@ -33,8 +33,9 @@ const Login = ({
         selectedEmail=node
       }}>
         <option value="ashok@snake-eyes.com">ashok@snake-eyes.com</option>
-        <option value="dan@snake-eyes.com">dan@snake-eyes.com</option>
         <option value="aria@snake-eyes.com">aria@snake-eyes.com</option>
+        <option value="fishrock123@snake-eyes.com">fishrock123@snake-eyes.com</option>
+        <option value="dan@snake-eyes.com">dan@snake-eyes.com</option>
         <option value="pete@snake-eyes.com">pete@snake-eyes.com</option>
       </select>
       <button onClick={(e) => {
