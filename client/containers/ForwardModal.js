@@ -10,11 +10,13 @@ const mapStateToProps = (state) => {
   const html = selectedEmail.getIn(['message', 'html']);
   const text = selectedEmail.getIn(['message', 'text']);
   const subject = selectedEmail.getIn(['message', 'subject']);
+  const { userInfo } = state;
 
   return {
     html,
     text,
-    subject
+    subject,
+    from: userInfo
   };
 };
 
@@ -29,6 +31,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const ForwardModal = ({
+  from,
   html,
   text,
   subject,
@@ -51,7 +54,7 @@ const ForwardModal = ({
       const to = refs.to ? refs.to.value.split(',') : null;
       if (!(to && to.length > 0))
         alert('Please specify atleast one email id');
-      onButtonClick(to, html, text, subject, "hello@trello.com");
+      onButtonClick(to, html, text, subject, from);
       forwardPanel.hide();
     }}
     buttonName="Send"

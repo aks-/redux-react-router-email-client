@@ -4,31 +4,38 @@ import { NavMenu } from '../components/NavMenu';
 import { fetchAndSelectBox } from '../actionCreators';
 
 const mapStateToProps = (state) => {
-  const { unread } = state;
+  const { 
+    unread,
+    userInfo 
+  } = state;
+  const { email } = userInfo;
   return {
-    unread
+    unread,
+    email
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onBoxClick: (box) => {
+    onBoxClick: (box, email) => {
       dispatch(
-        fetchAndSelectBox(box)
+        fetchAndSelectBox(box, email)
       );
     }
   };
 };
 
-export const Nav = (props) => {
-
-  const { unread, onBoxClick } = props;
+export const Nav = ({
+  email,
+  unread,
+  onBoxClick
+}) => {
 
   const items = [{
     name: 'Inbox',
     onClick: (e) => {
       e.preventDefault();
-      onBoxClick('inbox'); 
+      onBoxClick('inbox', email); 
     },
     childClassName: 'email-count',
     children: unread
@@ -38,7 +45,7 @@ export const Nav = (props) => {
     name: 'Sent',
     onClick: (e) => {
       e.preventDefault();
-      onBoxClick('sent');
+      onBoxClick('sent', email);
     }
   }, {
     name: 'Drafts'

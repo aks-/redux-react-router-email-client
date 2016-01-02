@@ -96,22 +96,36 @@ module.exports = (router) => {
   });
 
   router.post('/compose', (req, res) => {
-    const { to, text, subject } = req.body;
+    const { to, text, subject, from } = req.body;
 
+    const view = 'userInfoByEmail';
+
+    db.findBy(design, view, {
+      key: to[0]
+    })
+    .then(body => {
+      const rows = body.rows;
+      const info = rows[0].value;
+      const userInfo = {
+        email: info.email,
+        name: info.name,
+        type: 'to'
+      }
+      return userInfo
+    })
+    .then(toEmail => {
+      const to = [toEmail];
       const email = { 
         message: {
           "html": `<p>${text}</p>`,
           "text": text,
           "subject": subject,
-          "from": {
-            "name": "A",
-            "email": "a@example.com"
-          }, //TODO how to resolve this
+          "from": from,
           "unread": true,
           "to": to,
           "timestamp": new Date().toISOString(),
           "headers": {
-            "Reply-To": 'a@example.com'
+            "Reply-To": from.email
           },
           "important": false
         },
@@ -122,6 +136,7 @@ module.exports = (router) => {
       .then(() => {
         res.status(200).json(email)
       })
+    });
   });
 
   router.post('/get-user-info', (req, res) => {

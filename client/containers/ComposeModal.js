@@ -3,17 +3,26 @@ import { connect } from 'react-redux';
 import { Modal } from '../components/shared/Modal';
 import { sendEmail } from '../actionCreators';
 
+const mapStateToProps = (state) => {
+  const { userInfo } = state;
+
+  return {
+    from: userInfo
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
-    onButtonClick: (to, text, subject) => {
+    onButtonClick: (to, text, subject, from) => {
       dispatch(
-        sendEmail(to, text, subject)
+        sendEmail(to, text, subject, from)
       )
     }
   };
 };
 
 const ComposeModal = ({
+  from,
   onButtonClick
 }) => {
   const refs = {};
@@ -48,7 +57,7 @@ const ComposeModal = ({
       const to = refs.to ? refs.to.value.split(',') : null;
       if (!(to && to.length > 0))
         alert('Please specify atleast one email address');
-      onButtonClick(to, text, subject);
+      onButtonClick(to, text, subject, from);
       panel.hide();
     }}
     buttonName="Send"
@@ -56,6 +65,6 @@ const ComposeModal = ({
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ComposeModal);

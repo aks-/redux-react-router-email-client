@@ -7,9 +7,11 @@ const mapStateToProps = (state) => {
   const { emails, selectedBox, selectedEmailIndex } = state;
   const selectedEmails = emails.get(selectedBox).toArray();
   const selectedEmail = selectedEmails[selectedEmailIndex];
+  const { userInfo } = state;
   
   return {
-    selectedEmail
+    selectedEmail,
+    from: userInfo
   };
 };
 
@@ -19,7 +21,8 @@ const mapDispatchToProps = (dispatch) => {
       email,
       text,
       subject,
-      thread_id
+      thread_id,
+      from
     ) => {
       dispatch(
         sendReply(
@@ -34,6 +37,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const ReplyModal = ({
+  from,
   selectedEmail,
   onButtonClick
 }) => {
@@ -66,7 +70,8 @@ const ReplyModal = ({
         email,
         text,
         subject,
-        thread_id
+        thread_id,
+        from
       );
       replyPanel.hide();
     }}

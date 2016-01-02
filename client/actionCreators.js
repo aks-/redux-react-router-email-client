@@ -44,7 +44,7 @@ export const fetchAndSelectBox = (box, email) => (
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      "email": email
+      email
     })
   })
   .then(response => response.json())
@@ -82,7 +82,7 @@ export const selectEmailToRead = index => (
   }
 );
 
-export const sendEmail = (to, text, subject) => (
+export const sendEmail = (to, text, subject, from) => (
   dispatch =>
   fetch('http://localhost:3000/compose', {
     method: 'POST',
@@ -94,6 +94,7 @@ export const sendEmail = (to, text, subject) => (
       to,
       text,
       subject,
+      from
     })
   })
   .then(response => response.json())
