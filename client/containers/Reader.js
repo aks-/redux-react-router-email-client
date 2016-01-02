@@ -36,6 +36,16 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onLogOutClick: () => {
       dispatch(logout());
+    },
+    onForwardClick: () => {
+      dispatch({
+        type: 'SHOW_FORWARD_DISPLAY'
+      });
+    },
+    onReplyClick: () => {
+      dispatch({
+        type: 'SHOW_REPLY_DISPLAY'
+      });
     }
   };
 };

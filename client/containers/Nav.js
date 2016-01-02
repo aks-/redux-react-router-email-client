@@ -21,6 +21,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         fetchAndSelectBox(box, email)
       );
+    },
+    onComposeClick: () => {
+      dispatch({
+        type: 'SHOW_COMPOSE_DISPLAY'
+      });
     }
   };
 };
@@ -28,7 +33,8 @@ const mapDispatchToProps = (dispatch) => {
 export const Nav = ({
   email,
   unread,
-  onBoxClick
+  onBoxClick,
+  onComposeClick
 }) => {
 
   const items = [{
@@ -63,6 +69,7 @@ export const Nav = ({
     className: 'email-label-travel'
   }];
   return <NavMenu
+    onComposeClick={onComposeClick}
     items={items}
     labels={labels}
   /> 

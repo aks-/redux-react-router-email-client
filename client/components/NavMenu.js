@@ -1,6 +1,7 @@
 import React from 'react';
 
 export const NavMenu = ({
+  onComposeClick,
   items,
   labels,
 }) => {
@@ -8,7 +9,10 @@ export const NavMenu = ({
   return <div className="pure-u id-nav">
     <a href="#nav" className="nav-menu-button">Menu</a>
     <div className="nav-inner">
-      <button id="compose-button" className="pure-button primary-button" href="#">Compose</button>
+      <button onClick={(e) => {
+        e.preventDefault();
+        onComposeClick();
+      }} id="compose-button" className="pure-button primary-button" href="#">Compose</button>
       <div className="pure-menu pure-menu-open">
         <ul>
           {items.map((item, i) => {

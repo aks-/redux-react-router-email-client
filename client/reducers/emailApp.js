@@ -12,6 +12,7 @@ import { boxSelector } from './boxSelector';
 import { emailSelector } from './emailSelector';
 import { unread } from './unread';
 import { userInfo } from './userInfo';
+import { modalDisplay } from './modalDisplay';
 
 export const emailApp = combineReducers({
   loggedIn,
@@ -20,5 +21,6 @@ export const emailApp = combineReducers({
   userInfo,
   emails,
   unread,
+  modalDisplay,
   routing: routeReducer
 });

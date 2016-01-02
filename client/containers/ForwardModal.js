@@ -11,12 +11,15 @@ const mapStateToProps = (state) => {
   const text = selectedEmail.getIn(['message', 'text']);
   const subject = selectedEmail.getIn(['message', 'subject']);
   const { userInfo } = state;
+  const { modalDisplay } = state;
+  const display = modalDisplay.get('forwardDisplay');
 
   return {
     html,
     text,
     subject,
-    from: userInfo
+    from: userInfo,
+    display
   };
 };
 
@@ -31,6 +34,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const ForwardModal = ({
+  display,
   from,
   html,
   text,
@@ -41,6 +45,7 @@ const ForwardModal = ({
 
   return <Modal
     idName="forward-email-content"
+    display={display}
     elements={[{
       label: 'To',
       ref: node => {

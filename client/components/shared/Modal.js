@@ -2,11 +2,20 @@ import React from 'react';
 
 export const Modal = ({
   idName,
+  display,
   elements,
   onButtonClick,
   buttonName
-}) => (
-  <div
+}) => {
+  const divStyle = {
+    backgroundColor: '#e3e3d3',
+    top: '40%',
+    left: '40%',
+    position: 'absolute',
+    display
+  };
+  return <div
+    style={divStyle}
     id={idName}
     >
     <div className="yui3-widget-bd">
@@ -32,4 +41,4 @@ export const Modal = ({
       </form>
     </div>
   </div>
-);
+};

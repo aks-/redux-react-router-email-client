@@ -103,6 +103,11 @@ export const sendEmail = (to, text, subject, from) => (
           email: json
         })
        )
+       .then(() => {
+         dispatch({
+           type: 'HIDE_COMPOSE_DISPLAY'
+         });
+       })
 );
 
 export const sendReply = (to, text, subject, thread_id, from) => (
@@ -123,13 +128,17 @@ export const sendReply = (to, text, subject, thread_id, from) => (
   })
   .then(response => response.json())
   .then(json =>  {
-    console.log(json);
         dispatch({
           type: 'SEND_REPLY',
           reply: json
         })
   }
        )
+       .then(() => {
+         dispatch({
+           type: 'HIDE_REPLY_DISPLAY'
+         });
+       })
 );
 
 export const forwardEmail = (to, html, text, subject, from) => (
@@ -155,6 +164,11 @@ export const forwardEmail = (to, html, text, subject, from) => (
           email: json
         })
        )
+       .then(() => {
+         dispatch({
+           type: 'HIDE_FORWARD_DISPLAY'
+         });
+       })
 );
 
 export const fetchUnread = (email) => (

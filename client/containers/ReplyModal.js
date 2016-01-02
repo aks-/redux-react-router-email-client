@@ -8,8 +8,11 @@ const mapStateToProps = (state) => {
   const selectedEmails = emails.get(selectedBox).toArray();
   const selectedEmail = selectedEmails[selectedEmailIndex];
   const { userInfo } = state;
-  
+   const { modalDisplay } = state;
+  const display = modalDisplay.get('replyDisplay');
+ 
   return {
+    display,
     selectedEmail,
     from: userInfo
   };
@@ -38,6 +41,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const ReplyModal = ({
+  display,
   from,
   selectedEmail,
   onButtonClick
@@ -46,6 +50,7 @@ const ReplyModal = ({
 
   return <Modal
     idName="reply-email-content"
+    display={display}
     elements={[{
       label: '',
       ref: node => {

@@ -5,9 +5,12 @@ import { sendEmail } from '../actionCreators';
 
 const mapStateToProps = (state) => {
   const { userInfo } = state;
+  const { modalDisplay } = state;
+  const display = modalDisplay.get('composeDisplay');
 
   return {
-    from: userInfo
+    from: userInfo,
+    display
   };
 };
 
@@ -23,11 +26,13 @@ const mapDispatchToProps = (dispatch) => {
 
 const ComposeModal = ({
   from,
+  display,
   onButtonClick
 }) => {
   const refs = {};
   return <Modal
     idName="compose-email-content"
+    display={display}
     elements={[{
       label: 'To',
       ref: node => {

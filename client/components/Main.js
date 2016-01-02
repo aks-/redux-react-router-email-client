@@ -5,7 +5,9 @@ export const Main = ({
   name,
   timestamp,
   html,
-  onLogOutClick
+  onLogOutClick,
+  onForwardClick,
+  onReplyClick
 }) => (
   <div className="pure-u id-main"> 
     <div className="logout-control">
@@ -24,8 +26,14 @@ export const Main = ({
             </p>
           </div>
           <div className="pure-u-1-2 email-content-controls">
-            <a id="reply-button" className="pure-button secondary-button" href="#">Reply</a>
-            <a id="forward-button" className="pure-button secondary-button">Forward</a>
+            <a onClick={(e) => {
+              e.preventDefault();
+              onReplyClick();
+            }} id="reply-button" className="pure-button secondary-button" href="#">Reply</a>
+            <a onClick={(e) => {
+              e.preventDefault();
+              onForwardClick();
+            }} id="forward-button" className="pure-button secondary-button">Forward</a>
             <a className="pure-button secondary-button">Move to</a>
           </div>
         </div>
