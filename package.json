@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prestart": "webpack-dev-server",
-    "start": "./node_modules/babel-cli/bin/babel-node.js --debug --presets es2015 -- server/app.js  --debug",
+    "start": "babel-node --debug --presets es2015 -- server/app.js  --debug",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ashok <coderatlabs@gmail.com>",
