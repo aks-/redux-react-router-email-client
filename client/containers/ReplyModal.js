@@ -29,7 +29,8 @@ const mapDispatchToProps = (dispatch) => {
           email,
           text,
           subject,
-          thread_id
+          thread_id,
+          from
         )
       );
     }

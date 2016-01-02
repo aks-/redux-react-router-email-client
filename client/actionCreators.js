@@ -49,30 +49,29 @@ export const fetchAndSelectBox = (box, email) => (
   })
   .then(response => response.json())
   .then(json => {
+    dispatch({
+      type: 'FETCH_BOX',
+      box: box,
+      emails: json
+    })
+  })
+  .then(() => 
         dispatch({
-          type: 'FETCH_BOX',
-          box: box,
-          emails: json
+          type: 'SELECT_EMAIL_TO_READ',
+          index: 0
         })
-  }
        )
-       .then(() => 
-             dispatch({
-               type: 'SELECT_EMAIL_TO_READ',
-               index: 0
-             })
-            )
             .then(() => 
-                  dispatch( 
-                                                      pushPath(`/${box}`)
-                          )
+                  dispatch({
+                    type: 'SELECT_BOX',
+                    box
+                  })
                  )
-                 .then(() => 
-                       dispatch({
-                         type: 'SELECT_BOX',
-                         box: box
-                       })
-                      )
+       .then(() => 
+             dispatch( 
+                               pushPath(`/${box}`)
+                     )
+            )
 );
 
 export const selectEmailToRead = index => (
@@ -123,11 +122,13 @@ export const sendReply = (to, text, subject, thread_id, from) => (
     })
   })
   .then(response => response.json())
-  .then(json => 
+  .then(json =>  {
+    console.log(json);
         dispatch({
           type: 'SEND_REPLY',
           reply: json
         })
+  }
        )
 );
 

@@ -42,76 +42,87 @@ module.exports = (router) => {
 
   router.post('/reply', (req, res) => {
     const { to, text, subject, thread_id, from } = req.body;
-    const reply = {
-      thread_id: thread_id,
-      message: {
-        "html": `<p>${text}</p>`,
-        "text": text,
-        "subject": subject,
-        "from": from,
-        "unread": true,
-        "to": to,
-        "timestamp": new Date().toISOString(),
-        "headers": {
-          "Reply-To": ''
-        },
-        "important": false
-      },
-      type: "message"
-    };
 
-    db.save(reply)
-    .then(() => {
-      res.status(200).json(reply);
+    getUserInfo(to)
+    .then(info => {
+      info.type = 'to';
+      return info;
+    })
+    .then(function(toEmail) {
+      const to = [toEmail];
+
+      const reply = {
+        thread_id: thread_id,
+        message: {
+          "html": `<p>${text}</p>`,
+          "text": text,
+          "subject": subject,
+          "from": from,
+          "unread": true,
+          "to": to,
+          "timestamp": new Date().toISOString(),
+          "headers": {
+            "Reply-To": ''
+          },
+          "important": false
+        },
+        type: "message"
+      };
+
+      db.save(reply)
+      .then(() => {
+        res.status(200).json(reply);
+      });
     });
   });
 
   router.post('/forward', (req, res) => {
     const { to, html, text, subject, from } = req.body;
 
-    const email = {
-      message: {
-        "html": `<p>begin forwarded message</p></br>${html}`,
-        "text": `begin forwarded message --- ${text}`,
-        "subject": subject,
-        "from": from,
-        "unread": true,
-        "to": to,
-        "timestamp": new Date().toISOString(),
-        "headers": {
-          "Reply-To": {
-            "name": "A",
-            "email": "a@example.com"
-          }
+    const key = to[0];
+    console.log(key, html, text, subject, from);
+    getUserInfo(key)
+    .then(info => {
+      console.log(info);
+      info.type = 'to';
+      return info;
+    })
+    .then(to => {
+      const email = {
+        message: {
+          "html": `<p>begin forwarded message</p></br>${html}`,
+          "text": `begin forwarded message --- ${text}`,
+          "subject": subject,
+          "from": from,
+          "unread": true,
+          "to": [to],
+          "timestamp": new Date().toISOString(),
+          "headers": {
+            "Reply-To": {
+              "name": "A",
+              "email": "a@example.com"
+            }
+          },
+          "important": false
         },
-        "important": false
-      },
-      type: "message"
-    };
-
-    db.save(email)
-    .then(() => {
-      res.status(200).json(email);
+        type: "message"
+      };
+      
+      db.save(email)
+      .then(() => {
+        res.status(200).json(email);
+      });
     });
   });
 
   router.post('/compose', (req, res) => {
     const { to, text, subject, from } = req.body;
 
-    const view = 'userInfoByEmail';
-
-    db.findBy(design, view, {
-      key: to[0]
-    })
-    .then(body => {
-      const rows = body.rows;
-      const info = rows[0].value;
-      const userInfo = {
-        email: info.email,
-        name: info.name,
-        type: 'to'
-      }
-      return userInfo
+    const key = to[0];
+    getUserInfo(key)
+    .then(info => {
+      info.type = 'to';
+      return info
     })
     .then(toEmail => {
       const to = [toEmail];
@@ -143,20 +154,29 @@ module.exports = (router) => {
     const view = 'userInfoByEmail';
     const { email } = req.body;
 
-    db.findBy(design, view, {
-      key: email
-    })
-    .then(body => {
-      const rows = body.rows;
-      const info = rows[0].value;
-      const userInfo = {
-        email: info.email,
-        name: info.name
-      }
-      res.status(200).json(userInfo);
+    getUserInfo(email)
+    .then((info) => {
+      res.status(200).json(info);
     });
   });
 }; 
+
+const getUserInfo = (key) => {
+  const view = 'userInfoByEmail';
+
+  return db.findBy(design, view, {
+    key
+  })
+  .then(body => {
+    const rows = body.rows;
+    const info = rows[0].value;
+    return {
+      email: info.email,
+      name: info.name,
+      avatar: info.avatar
+    };
+  });
+};
 
 const getItems = (design, view, keyObj) => {
   return db.findBy(design, view, keyObj)
