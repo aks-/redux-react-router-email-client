@@ -1,7 +1,41 @@
 import { pushPath } from 'redux-simple-router';
 import fetch from 'isomorphic-fetch';
 
-export const fetchAndSelectBox = box => (
+export const login = (email) => (
+  dispatch => 
+  fetch('http://localhost:3000/get-user-info', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email
+    })
+  })
+  .then(response => response.json())
+  .then(json => {
+    dispatch({
+      type: 'LOG_IN'
+    });
+    return json;
+  })
+  .then((info) => {
+    dispatch({
+      type: 'SET_USER_INFO',
+      info
+    });
+    return info.email;
+  })
+  .then((email) => {
+    dispatch(fetchAndSelectBox('inbox', email));
+  })
+  .then(() => {
+    dispatch(fetchUnread(email))
+  })
+);
+
+export const fetchAndSelectBox = (box, email) => (
   dispatch => 
   fetch(`http://localhost:3000/${box}`, {
     method: 'POST',
@@ -10,16 +44,17 @@ export const fetchAndSelectBox = box => (
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      "email": "a@example.com"
+      "email": email
     })
   })
   .then(response => response.json())
-  .then(json => 
+  .then(json => {
         dispatch({
           type: 'FETCH_BOX',
           box: box,
           emails: json
         })
+  }
        )
        .then(() => 
              dispatch({
@@ -29,7 +64,7 @@ export const fetchAndSelectBox = box => (
             )
             .then(() => 
                   dispatch( 
-                           pushPath(`/${box}`)
+                                                      pushPath(`/${box}`)
                           )
                  )
                  .then(() => 
@@ -120,7 +155,7 @@ export const forwardEmail = (to, html, text, subject, from) => (
        )
 );
 
-export const fetchUnread = () => (
+export const fetchUnread = (email) => (
   dispatch => {
     fetch(`http://localhost:3000/unread`, {
       method: 'POST',
@@ -129,7 +164,7 @@ export const fetchUnread = () => (
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "email": "a@example.com"
+        "email": email
       })
     })
     .then(response => response.json())

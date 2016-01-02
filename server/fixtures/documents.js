@@ -7,20 +7,19 @@ export default {
       "text": "Example text content",
       "subject": "example subject",
       "from": {
-        "email": "a@example.com",
+        "email": "aria@snake-eyes.com",
         "name": "A"
       },
       "unread": false,
-      "to": [
-        {
-          "email": "b@example.com",
+      "to": [ {
+          "email": "ashok@snake-eyes.com",
           "name": "B",
           "type": "to"
         }
       ],
       "timestamp": "1000",
       "headers": {
-        "Reply-To": "a@example.com",
+        "Reply-To": "aria@snake-eyes.com",
       },
       "important": false
     },
@@ -33,20 +32,20 @@ export default {
       "text": "Example reply",
       "subject": "example subject",
       "from": {
-        "email": "b@example.com",
+        "email": "ashok@snake-eyes.com",
         "name": "B"
       },
       "unread": true,
       "to": [
         {
-          "email": "a@example.com",
+          "email": "aria@snake-eyes.com",
           "name": "A",
           "type": "to"
         }
       ],
       "timestamp": "1200",
       "headers": {
-        "Reply-To": "b@example.com",
+        "Reply-To": "ashok@snake-eyes.com",
       },
       "important": false
     },
@@ -64,7 +63,7 @@ export default {
       "unread": true,
       "to": [
         {
-          "email": "b@example.com",
+          "email": "ashok@snake-eyes.com",
           "name": "B",
           "type": "to"
         }
@@ -83,7 +82,7 @@ export default {
       "text": "Example text content",
       "subject": "example subject",
       "from": {
-        "email": "a@example.com",
+        "email": "aria@snake-eyes.com",
         "name": "A"
       },
       "unread": true,
@@ -96,7 +95,7 @@ export default {
       ],
       "timestamp": "1000",
       "headers": {
-        "Reply-To": "a@example.com",
+        "Reply-To": "aria@snake-eyes.com",
       },
       "important": false
     },
@@ -108,20 +107,20 @@ export default {
       "text": "Example text content",
       "subject": "example subject",
       "from": {
-        "email": "a@example.com",
+        "email": "aria@snake-eyes.com",
         "name": "A"
       },
       "unread": true,
       "to": [
         {
-          "email": "b@example.com",
+          "email": "ashok@snake-eyes.com",
           "name": "B",
           "type": "to"
         }
       ],
       "timestamp": "1000",
       "headers": {
-        "Reply-To": "a@example.com",
+        "Reply-To": "aria@snake-eyes.com",
       },
       "important": false
     },

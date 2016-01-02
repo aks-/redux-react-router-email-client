@@ -11,7 +11,11 @@ import {
   fromJS
 } from 'immutable';
 import { Provider } from 'react-redux';
-import { Router, Route } from 'react-router';
+import {
+  Router,
+  Route,
+  IndexRoute
+} from 'react-router';
 import { createHistory } from 'history';
 import { syncReduxAndRouter } from 'redux-simple-router';
 import Nav from './containers/Nav';
@@ -20,12 +24,13 @@ import Reader from './containers/Reader';
 import ComposeModal from './containers/ComposeModal';
 import ReplyModal from './containers/ReplyModal';
 import ForwardModal from './containers/ForwardModal';
+import Login from './containers/Login';
 import { emailApp } from './reducers/emailApp';
-import { Root } from './components/Root';
+import Root from './components/Root';
 import { App } from './components/App';
 import { 
-fetchAndSelectBox,
-fetchUnread
+  fetchAndSelectBox,
+  fetchUnread
 } from './actionCreators';
 
 const storeWithMiddleware = applyMiddleware(
@@ -37,19 +42,16 @@ const store = storeWithMiddleware(emailApp);
 
 syncReduxAndRouter(history, store);
 
-store.dispatch(fetchAndSelectBox('inbox'))
-.then(() => {
-  store.dispatch(fetchUnread());
-})
-.then(()=> {
-  ReactDOM.render(
-    <Provider store={store}>
-      <Router path="/" component={Root}>
-        <Route path="/" component={App} />
+ReactDOM.render(
+  <Provider store={store}>
+    <Router history={history}>
+      <Route path="/" component={Root} >
+        <IndexRoute component={Login} />
         <Route path="inbox" component={App} />
         <Route path="sent" component={App} />
-      </Router>
-    </Provider>,
-    document.getElementById('app')
-  );
-});
+      </Route>
+    </Router>
+  </Provider>,
+  document.getElementById('app')
+);
+

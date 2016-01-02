@@ -5,10 +5,10 @@ const design = 'emails';
 module.exports = (router) => { 
   router.post('/sent', (req, res) => {
     const view = 'byFromEmail';
-    const key = req.body.email;
+    const { email } = req.body;
 
     getItems(design, view, {
-      key: [key]
+      key: email
     })
     .then(items => {
       res.status(200).json(items)
@@ -17,10 +17,10 @@ module.exports = (router) => {
 
   router.post('/inbox', (req, res) => {
     const view = 'byToEmail';
-    const key = req.body.email;
+    const { email } = req.body;
 
     getItems(design, view, {
-      key
+      key: email
     })
     .then(items => {
       res.status(200).json(items);
@@ -122,6 +122,24 @@ module.exports = (router) => {
       .then(() => {
         res.status(200).json(email)
       })
+  });
+
+  router.post('/get-user-info', (req, res) => {
+    const view = 'userInfoByEmail';
+    const { email } = req.body;
+
+    db.findBy(design, view, {
+      key: email
+    })
+    .then(body => {
+      const rows = body.rows;
+      const info = rows[0].value;
+      const userInfo = {
+        email: info.email,
+        name: info.name
+      }
+      res.status(200).json(userInfo);
+    });
   });
 }; 
 

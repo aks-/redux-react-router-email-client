@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-export const Root = ({
-  children
-}) => (
-  {children}
-);
+export class Root extends Component {
+  render() {
+    const { children } = this.props;
+    return (
+      {children}
+    );
+  }
+}

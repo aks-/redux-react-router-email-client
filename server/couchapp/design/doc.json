@@ -2,10 +2,13 @@
   "_id": "emails",
   "views": {
     "byFromEmail": {
-      "map": "function(doc) { if (doc.type === 'message') { emit([doc.message.from.email], doc) } }"
+      "map": "function(doc) { if (doc.type === 'message') { emit(doc.message.from.email, doc) } }"
     },
     "byToEmail": {
-      "map": "function(doc) { if (doc.type === 'message') { for (var x in doc.message.to) emit(x.email, doc) } }"
+      "map": "function(doc) { if (doc.type === 'message') { doc.message.to.forEach(function(x) { emit(x.email, doc) }) } }"
+    },
+    "userInfoByEmail": {
+      "map": "function(doc) { if (doc.type === 'user') { emit(doc.email, doc) } }"
     }
   }
 }
