@@ -4,9 +4,16 @@ export const Main = ({
   subject,
   name,
   timestamp,
-  html
+  html,
+  onLogOutClick
 }) => (
   <div className="pure-u id-main"> 
+    <div className="logout-control">
+      <a onClick={(e) => {
+        e.preventDefault();
+        onLogOutClick();
+      }} className="pure-button secondary-button">Logout</a>
+    </div>
     <div className="content">
       <div className="email-content pure-g">
         <div className="email-content-header pure-g">

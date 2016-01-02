@@ -104,8 +104,6 @@ a.secondary-button {
 }
 
 
-
-
 /* Email Item Styles */
 .email-item {
   padding: 0.9em 1em;
@@ -135,6 +133,13 @@ a.secondary-button {
 }
 .email-item-unread {
   border-left: 6px solid #02a3c6;
+}
+
+/* Reader logout style */
+.logout-control {
+  margin-top: 0.5em;
+  margin-right: 2em;
+  text-align: right;
 }
 
 /* Email Content Styles */

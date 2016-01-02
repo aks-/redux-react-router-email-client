@@ -177,3 +177,12 @@ export const fetchUnread = (email) => (
          )
   }
 );
+
+export const logout = () => (
+  dispatch => {
+    dispatch({
+      type: 'LOG_OUT'
+    })
+    dispatch(pushPath('/'))
+  }
+);

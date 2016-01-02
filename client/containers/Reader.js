@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Main } from '../components/Main';
 import { connect } from 'react-redux';
+import { logout } from '../actionCreators';
 
 const mapStateToProps = (state) => {
   const { selectedBox, emails, selectedEmailIndex } = state;
@@ -31,4 +32,12 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Main);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onLogOutClick: () => {
+      dispatch(logout());
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
