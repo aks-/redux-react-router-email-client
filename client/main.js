@@ -5,6 +5,7 @@ import {
   applyMiddleware
 } from 'redux';
 import thunk from 'redux-thunk';
+import createLogger from 'redux-logger';
 import {
   Map,
   List,
@@ -34,7 +35,8 @@ import {
 } from './actionCreators';
 
 const storeWithMiddleware = applyMiddleware(
-  thunk
+  thunk,
+  createLogger()
 )(createStore);
 
 const history = createHistory();
