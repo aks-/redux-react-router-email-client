@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prestart": "webpack-dev-server",
     "load": "babel-node --debug --presets es2015 -- server/couchapp/load --debug",
+    "devserver": "webpack-dev-server",
     "start": "babel-node --debug --presets es2015 -- server/app.js  --debug",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
