@@ -36,6 +36,11 @@ const mapDispatchToProps = (dispatch) => {
           from
         )
       );
+    },
+    onCancelClick: () => {
+      dispatch({
+        type: 'HIDE_REPLY_DISPLAY'
+      })
     }
   };
 };
@@ -44,14 +49,23 @@ const ReplyModal = ({
   display,
   from,
   selectedEmail,
-  onButtonClick
+  onButtonClick,
+  onCancelClick
 }) => {
   const refs = {};
 
   return <Modal
     idName="reply-email-content"
     display={display}
+    dropDownElements={[
+      'ashok@snake-eyes.com',
+      'aria@snake-eyes.com',
+      'fishrock123@snake-eyes.com',
+      'dan@snake-eyes.com',
+      'pete@snake-eyes.com'
+    ]}
     elements={[{
+      isDropDown: false,
       label: '',
       ref: node => {
         refs['text'] = node;
@@ -59,6 +73,10 @@ const ReplyModal = ({
       id: 'compose-email-body',
       placeholder: ''
     }]}
+    onCancelClick={e => {
+      e.preventDefault();
+      onCancelClick();
+    }}
     onButtonClick={e => {
       e.preventDefault();
       const text = refs.text.value;
@@ -79,7 +97,7 @@ const ReplyModal = ({
         thread_id,
         from
       );
-      replyPanel.hide();
+      refs.text.value = '';
     }}
     buttonName="Send Reply"
   />

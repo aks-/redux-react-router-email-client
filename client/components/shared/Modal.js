@@ -5,7 +5,9 @@ export const Modal = ({
   display,
   elements,
   onButtonClick,
-  buttonName
+  buttonName,
+  onCancelClick,
+  dropDownElements
 }) => {
   const divStyle = {
     backgroundColor: '#e3e3d3',
@@ -25,11 +27,24 @@ export const Modal = ({
                         {
                           return <p key={i}>
                             <label>{element.label}</label>
-                            <input 
-                              ref={element.ref}
-                              id={element.id}
-                              placeholder={element.placeholder}
-                            />
+                            {element.isDropDown ?
+                              <select
+                                ref={element.ref}
+                                if={element.id}
+                                placeholder={element.placeholder}
+                                >
+                                {dropDownElements.map(x => {
+                                  return <option value={x}>
+                                    {x}
+                                  </option>
+                                })}
+                              </select> :
+                                <input 
+                                  ref={element.ref}
+                                  id={element.id}
+                                  placeholder={element.placeholder}
+                                />
+                              }
                           </p>
                         })}
         </fieldset>
@@ -37,6 +52,11 @@ export const Modal = ({
           onClick={onButtonClick}
           >
           {buttonName}
+        </button>
+        <button
+          onClick={onCancelClick}
+          >
+          Cancel
         </button>
       </form>
     </div>

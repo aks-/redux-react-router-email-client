@@ -20,6 +20,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         sendEmail(to, text, subject, from)
       )
+    },
+    onCancelClick: () => {
+      dispatch({
+        type: 'HIDE_COMPOSE_DISPLAY'
+      })
     }
   };
 };
@@ -27,13 +32,22 @@ const mapDispatchToProps = (dispatch) => {
 const ComposeModal = ({
   from,
   display,
-  onButtonClick
+  onButtonClick,
+  onCancelClick
 }) => {
   const refs = {};
   return <Modal
     idName="compose-email-content"
     display={display}
+    dropDownElements={[
+      'ashok@snake-eyes.com',
+      'aria@snake-eyes.com',
+      'fishrock123@snake-eyes.com',
+      'dan@snake-eyes.com',
+      'pete@snake-eyes.com'
+    ]}
     elements={[{
+      isDropDown: true,
       label: 'To',
       ref: node => {
         refs['to'] = node;
@@ -63,7 +77,13 @@ const ComposeModal = ({
       if (!(to && to.length > 0))
         alert('Please specify atleast one email address');
       onButtonClick(to, text, subject, from);
-      panel.hide();
+      Object.keys(refs).forEach((x) => {
+        refs[x].value = '';
+      });
+    }}
+    onCancelClick={e => {
+      e.preventDefault();
+      onCancelClick();
     }}
     buttonName="Send"
   />;
