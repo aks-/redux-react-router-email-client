@@ -10,7 +10,7 @@ export const Modal = ({
   dropDownElements
 }) => {
   const divStyle = {
-    backgroundColor: '#e3e3d3',
+    backgroundColor: 'white',
     top: '40%',
     left: '40%',
     position: 'absolute',
