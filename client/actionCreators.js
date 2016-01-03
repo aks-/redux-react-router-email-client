@@ -55,23 +55,21 @@ export const fetchAndSelectBox = (box, email) => (
       emails: json
     })
   })
-  .then(() => 
-        dispatch({
-          type: 'SELECT_EMAIL_TO_READ',
-          index: 0
-        })
-       )
-            .then(() => 
-                  dispatch({
-                    type: 'SELECT_BOX',
-                    box
-                  })
-                 )
-       .then(() => 
-             dispatch( 
-                               pushPath(`/${box}`)
-                     )
-            )
+  .then(() => {
+    dispatch({
+      type: 'SELECT_EMAIL_TO_READ',
+      index: 0
+    })
+  })
+  .then(() => {
+    dispatch({
+      type: 'SELECT_BOX',
+      box
+    })
+  })
+  .then(() => {
+    dispatch(pushPath(`/${box}`))
+  })
 );
 
 export const selectEmailToRead = index => (
@@ -97,17 +95,17 @@ export const sendEmail = (to, text, subject, from) => (
     })
   })
   .then(response => response.json())
-  .then(json => 
-        dispatch({
-          type: 'SEND_EMAIL',
-          email: json
-        })
-       )
-       .then(() => {
-         dispatch({
-           type: 'HIDE_COMPOSE_DISPLAY'
-         });
-       })
+  .then(json => {
+    dispatch({
+      type: 'SEND_EMAIL',
+      email: json
+    })
+  })
+  .then(() => {
+    dispatch({
+      type: 'HIDE_COMPOSE_DISPLAY'
+    });
+  })
 );
 
 export const sendReply = (to, text, subject, thread_id, from) => (
@@ -128,17 +126,16 @@ export const sendReply = (to, text, subject, thread_id, from) => (
   })
   .then(response => response.json())
   .then(json =>  {
-        dispatch({
-          type: 'SEND_REPLY',
-          reply: json
-        })
-  }
-       )
-       .then(() => {
-         dispatch({
-           type: 'HIDE_REPLY_DISPLAY'
-         });
-       })
+    dispatch({
+      type: 'SEND_REPLY',
+      reply: json
+    })
+  })
+  .then(() => {
+    dispatch({
+      type: 'HIDE_REPLY_DISPLAY'
+    });
+  })
 );
 
 export const forwardEmail = (to, html, text, subject, from) => (
@@ -158,17 +155,17 @@ export const forwardEmail = (to, html, text, subject, from) => (
     })
   })
   .then(response => response.json())
-  .then(json => 
-        dispatch({
-          type: 'FORWARD_EMAIL',
-          email: json
-        })
-       )
-       .then(() => {
-         dispatch({
-           type: 'HIDE_FORWARD_DISPLAY'
-         });
-       })
+  .then(json => {
+    dispatch({
+      type: 'FORWARD_EMAIL',
+      email: json
+    })
+  })
+  .then(() => {
+    dispatch({
+      type: 'HIDE_FORWARD_DISPLAY'
+    });
+  })
 );
 
 export const fetchUnread = (email) => (
@@ -184,12 +181,12 @@ export const fetchUnread = (email) => (
       })
     })
     .then(response => response.json())
-    .then(json => 
-          dispatch({
-            type: 'GET_UNREAD',
-            unread: json
-          })
-         )
+    .then(json => {
+      dispatch({
+        type: 'GET_UNREAD',
+        unread: json
+      })
+    })
   }
 );
 
