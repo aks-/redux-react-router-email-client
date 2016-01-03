@@ -58,11 +58,11 @@ const ReplyModal = ({
     idName="reply-email-content"
     display={display}
     dropDownElements={[
-      'ashok@snake-eyes.com',
       'aria@snake-eyes.com',
       'fishrock123@snake-eyes.com',
       'dan@snake-eyes.com',
-      'pete@snake-eyes.com'
+      'pete@snake-eyes.com',
+      'ashok@snake-eyes.com'
     ]}
     elements={[{
       isDropDown: false,
