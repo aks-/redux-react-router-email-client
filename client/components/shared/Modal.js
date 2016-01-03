@@ -33,8 +33,8 @@ export const Modal = ({
                                 if={element.id}
                                 placeholder={element.placeholder}
                                 >
-                                {dropDownElements.map(x => {
-                                  return <option value={x}>
+                                {dropDownElements.map((x, i) => {
+                                  return <option key={i} value={x}>
                                     {x}
                                   </option>
                                 })}
