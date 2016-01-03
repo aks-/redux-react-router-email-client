@@ -3,12 +3,6 @@ import {
   List,
   fromJS
 } from 'immutable';
-import generateRandomString from '../lib/generateRandomString';
-import { 
-  fetchInbox,
-  fetchSentItems,
-  fetchUnread
-} from '../lib/fetchDocuments';
 import { sent } from './sent';
 
 const FORWARD_EMAIL = 'FORWARD_EMAIL';

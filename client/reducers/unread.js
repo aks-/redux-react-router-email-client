@@ -1,5 +1,3 @@
-import { fetchUnread } from '../lib/fetchDocuments';
-
 const GET_UNREAD = 'GET_UNREAD';
 const LOG_OUT = 'LOG_OUT';
 

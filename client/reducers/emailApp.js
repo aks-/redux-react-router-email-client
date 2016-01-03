@@ -5,7 +5,6 @@ import {
   fromJS
 } from 'immutable';
 import { routeReducer } from 'redux-simple-router';
-import generateRandomString from '../lib/generateRandomString';
 import { loggedIn } from './loggedIn';
 import { emails } from './emails';
 import { boxSelector } from './boxSelector';

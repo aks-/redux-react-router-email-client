@@ -3,12 +3,6 @@ import {
   List,
   fromJS
 } from 'immutable';
-import generateRandomString from '../lib/generateRandomString';
-import { 
-  fetchInbox,
-  fetchSentItems,
-  fetchUnread
-} from '../lib/fetchDocuments';
 
 const FETCH_BOX = 'FETCH_BOX';
 
