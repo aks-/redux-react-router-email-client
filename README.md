@@ -73,9 +73,16 @@ This app doesn't cover the validations and boundary conditions.
 
 ## Running the app
 
+   Make sure you have couchdb installed and running and checkout server/config/dbConfig.
    To run the app open the command prompt and follow along:
 
    ```sh
+   # install babel-cli globally
+   npm install -g babel-cli
+   
    # install all the modules
    npm install
+
+   # start the app
+   npm start
    ```
